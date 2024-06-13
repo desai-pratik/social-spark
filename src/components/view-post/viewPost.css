@@ -1,0 +1,39 @@
+.user-img img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.post-review i {
+    position: relative;
+    display: inline-block;
+    margin: 0 8px;
+    z-index: 1;
+    line-height: 27px;
+    padding: 0 0 0 5px;
+    text-align: center;
+    color:white;
+    font-size: 14px;
+}
+.post-review i:first-child::after {
+    background-color: #21aeff;
+}
+.post-review i:nth-child(2)::after {
+    background-color: #ff4221;
+}
+.post-review i:nth-child(3)::after {
+    background-color: red;
+}
+.post-review i::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    border-radius: 50%;
+}

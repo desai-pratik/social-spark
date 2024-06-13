@@ -1,0 +1,23 @@
+.login {
+    background-color: #ecececd5;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 18px;
+    border: none;
+    background-color: #0269ce;
+    color: white;
+    border-radius: 5px;
+}
+.create-ac-btn {
+    width: 50%;
+    padding: 8px 0;
+    display: block;
+    margin:0 auto;
+    border: none;
+    background-color: #00aa1c;
+    color: white;
+    border-radius: 5px;
+}

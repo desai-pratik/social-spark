@@ -1,0 +1,18 @@
+.user-img img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input {
+    outline: none;
+}
+
+.custome-btn {
+    background-color: green;
+    border: none;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+}

@@ -1,0 +1,14 @@
+.profile-banner {
+    height: 70vh;
+    object-fit: cover;
+}
+
+.user-images {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid white;
+    margin: -100px auto 0 auto;
+    display: block;
+    position: relative;
+}
