@@ -7,18 +7,23 @@ import SignUp from './pages/signup/SignUp';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
+import { AuthContext } from './context/AuthContext';
+import { useContext } from 'react';
 
 function App() {
+
+  const { user } = useContext(AuthContext)
+
   return (
     <Router>
       <Routes>
+      <Route path="/" element={user ? <Home /> : <SignUp />} />
         <Route path="/profile/:username" element={<Profile />} />
-        {/* <Route path="/" element={<Profile />} /> */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/" element={<Home />} />
+        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
+        <Route path="/sign-up" element={user ? <Navigate to="/" /> : <SignUp />} />
       </Routes>
     </Router>
 

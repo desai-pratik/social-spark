@@ -21,3 +21,9 @@
     color: white;
     border-radius: 5px;
 }
+.eye-icon{
+    position: absolute;
+    top: 37%;
+    right: 15px;
+    cursor: pointer;
+}

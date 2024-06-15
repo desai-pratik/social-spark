@@ -1,7 +1,7 @@
 import React from 'react'
 import "./rightbar.css"
 
-const Rightbar = ({ profile }) => {
+const Rightbar = ({ user }) => {
 
   const HomeRightbar = () => {
     return (
@@ -85,10 +85,9 @@ const Rightbar = ({ profile }) => {
     return (
       <div className='rigthbar pt-3 pe-3 position-sticky overflow-y-auto'>
         <h5>User Information</h5>
-        <b>City:</b> <span>New York</span> <br />
-        <b>From:</b> <span>Madrid</span> <br />
-        <b>Relationship:</b> <span>Single</span> <br />
-
+        <b>City:</b> <span>{user.city}</span> <br />
+        <b>From:</b> <span>{user.from}</span> <br />
+        <b>Relationship:</b> <span>{user.relationship}</span> <br />
 
         <div className="container-fluid p-1">
           <h5 className='mt-3'>User Friends</h5>
@@ -122,7 +121,7 @@ const Rightbar = ({ profile }) => {
 
   return (
     <>
-      {profile ? <ProfileRightbar /> : <HomeRightbar />}
+      {user ? <ProfileRightbar /> : <HomeRightbar />}
     </>
   )
 }

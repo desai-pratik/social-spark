@@ -5,7 +5,7 @@
     cursor: pointer;
 }
 
-.post-review i {
+.post-review .hart {
     position: relative;
     display: inline-block;
     margin: 0 8px;
@@ -16,16 +16,17 @@
     color:white;
     font-size: 14px;
 }
-.post-review i:first-child::after {
-    background-color: #21aeff;
+.post-review .hart:first-child::after {
+    /* background-color: #21aeff; */
+    background-color: red;
 }
-.post-review i:nth-child(2)::after {
+/* .post-review i:nth-child(2)::after {
     background-color: #ff4221;
 }
 .post-review i:nth-child(3)::after {
     background-color: red;
-}
-.post-review i::after {
+} */
+.post-review .hart::after {
     content: '';
     position: absolute;
     width: 25px;
