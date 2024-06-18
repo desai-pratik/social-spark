@@ -1,8 +1,9 @@
-import React, { useContext, useRef, useState } from 'react'
-import "./login.css"
-// import { loginCall } from '../../../apiCalls';
+import React, { useContext, useRef, useState } from 'react';
+import "./login.css";
 import { AuthContext } from '../../context/AuthContext';
 import { loginCall } from '../../apiCalls';
+import { Link } from 'react-router-dom';
+import { auth, provider, signInWithPopup } from '../../firebase';
 
 const Login = () => {
     const [passwordShown, setPasswordShown] = useState(false);
@@ -13,9 +14,23 @@ const Login = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         loginCall({ email: email.current.value, password: password.current.value }, dispatch);
-        console.log();
     }
-    console.log(user);
+
+    const handleGoogleSignIn = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            const newUser = {
+                email: user.email,
+                password: user.uid,
+            };
+            loginCall(newUser, dispatch);
+        } catch (error) {
+            console.error("Error during Google sign-in:", error);
+            dispatch({ type: "LOGIN_FAILURE", payload: error });
+        }
+    };
+
     return (
         <div className='login'>
             <div className="container ">
@@ -33,9 +48,12 @@ const Login = () => {
                                     onClick={() => setPasswordShown(!passwordShown)}
                                 ></i>
                             </div>
-                            <button type='submit' className='login-btn mt-2'>{isFetching ? "Loading...":"Login"}</button>
+                            <button type='submit' className='login-btn mt-2'>{isFetching ? "Loading..." : "LogIn"}</button>
+                            <button type='button' className='google-login mt-2' onClick={handleGoogleSignIn}>
+                                <i className="bi bi-google fs-5 text-danger me-2"></i> LogIn with Google
+                            </button>
                             <span className='text-center d-block mx-auto my-3'>Forgot Password?</span>
-                            <button type='button' className='create-ac-btn'>Create a New Account</button>
+                            <Link to="/sign-up" type='button' className='create-ac-btn'>Create a New Account</Link>
                         </form>
                     </div>
                 </div>

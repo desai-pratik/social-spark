@@ -12,14 +12,16 @@
     border-radius: 5px;
 }
 .create-ac-btn {
+    display: block;
     width: 50%;
     padding: 8px 0;
-    display: block;
     margin:0 auto;
     border: none;
     background-color: #00aa1c;
     color: white;
+    text-align: center;
     border-radius: 5px;
+    text-decoration: none;
 }
 .eye-icon{
     position: absolute;
@@ -27,3 +29,17 @@
     right: 15px;
     cursor: pointer;
 }
+
+.google-login {
+    width: 100%;
+    padding: 5px;
+    font-size: 16px; 
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+ 

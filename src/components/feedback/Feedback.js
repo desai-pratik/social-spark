@@ -21,7 +21,7 @@ const Feedback = ({ username }) => {
     return (
         <div className='feedback p-3'>
             {(!username || username === user.username) && <SharePost />}
-            {posts.length === 0 && (<p className="text-center" style={{marginTop:"150px"}}>no post found! </p>)}
+            {posts.length === 0 && (<p className="text-center" style={{marginTop:"150px"}}>No post found! </p>)}
             {posts.map((post) => <ViewPost key={post._id} post={post} />)}
         </div>
     )

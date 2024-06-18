@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react'
 import "./sign-up.css"
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth, provider, signInWithPopup } from '../../firebase';
 
 const SignUp = () => {
     const [passwordShown, setPasswordShown] = useState(false);
@@ -31,6 +32,24 @@ const SignUp = () => {
             }
         }
     }
+
+    const handleGoogleSignIn = async () => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            const newUser = {
+                username: user.displayName,
+                email: user.email,
+                password: user.uid,
+                confirm_password: user.uid,
+            };
+            await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, newUser);
+            navigate('/login');
+        } catch (error) {
+            console.error("Error during Google sign-in:", error);
+        }
+    };
+
     return (
         <div className='sign-up'>
             <div className="container ">
@@ -51,7 +70,8 @@ const SignUp = () => {
                                 ></i>
                             </div>
                             <button type='submit' className='sign-up-btn mt-2'>SignUp</button>
-                            <button type='button' className='create-ac-btn mt-3'>Login into Account</button>
+                            <button type='button' className='google-login mt-3' onClick={handleGoogleSignIn}><i className="bi bi-google fs-5 text-danger me-2"></i> SignUp with Google</button>
+                            <Link to="/login" type='button' className='create-ac-btn mt-3'>Login into Account</Link>
                         </form>
                     </div>
                 </div>

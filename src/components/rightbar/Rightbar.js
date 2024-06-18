@@ -41,7 +41,7 @@ const Rightbar = ({ user }) => {
   const ProfileRightbar = () => {
     const [friends, setFriends] = useState([]);
     const [followed, setFollowed] = useState(false);
-   
+
     useEffect(() => {
       const getFriends = async () => {
         try {
@@ -66,12 +66,12 @@ const Rightbar = ({ user }) => {
           await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/unfollow`, {
             userId: currentUser._id,
           });
-          dispatch({type:"UNFOLLOW", payload: user._id})
+          dispatch({ type: "UNFOLLOW", payload: user._id })
         } else {
           await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/follow`, {
             userId: currentUser._id,
           });
-          dispatch({type:"FOLLOW", payload: user._id})
+          dispatch({ type: "FOLLOW", payload: user._id })
         }
       } catch (error) {
         console.log(error);
@@ -90,6 +90,7 @@ const Rightbar = ({ user }) => {
 
         <div className="container-fluid p-1">
           <h5 className='mt-3'>User Friends</h5>
+          {friends.length === 0 && <p className="mt-3">No friends found!</p>}
           <div className="row">
             {friends.map((friend) => (
               <Link to={'/profile/' + friend.username} key={friend._id} className='text-decoration-none'>
