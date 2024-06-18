@@ -16,3 +16,9 @@ input {
     padding: 4px 8px;
     border-radius: 6px;
 }
+
+.post-img{
+    max-height: 450px !important;
+    min-width: 400px;
+    object-fit: contain;
+}

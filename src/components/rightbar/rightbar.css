@@ -2,6 +2,14 @@
     height: calc(100vh - 60px); 
     top: 60px;
 }
+.btn-follow{
+  border: none;
+  padding: 8px 10px;
+  background-color: #21aeff;
+  border-radius: 8px;
+  color: white;
+  margin-bottom: 15px;
+}
 .rigthbar::-webkit-scrollbar{
     width: 5px;
 }

@@ -18,7 +18,7 @@ const ViewPost = ({ post }) => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await axios.get(`https://socialspark-backend.onrender.com/api/user?userId=${post.userId}`);
+      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?userId=${post.userId}`);
       setPostUser(res.data);
     };
     fetchPosts();
@@ -26,7 +26,7 @@ const ViewPost = ({ post }) => {
 
   const hendallike = async (id) => {
     try {
-      const res = await axios.put(`https://socialspark-backend.onrender.com/api/posts/${id}/like`, {
+      const res = await axios.put(`${process.env.REACT_APP_API_BASE_URL}/posts/${id}/like`, {
         userId: user._id,
       });
       if (res.data === "The post has been liked.") {
@@ -64,7 +64,7 @@ const ViewPost = ({ post }) => {
           <p>{post.desc}</p>
         </div>
         <div className="post-img">
-          <img src={post.img} className="w-100" alt="" />
+          <img className="img-fluid post-img d-flex mx-auto" src={post.img} alt="" />
         </div>
         <div className="post-review d-flex justify-content-between align-items-center mt-2">
           <div>

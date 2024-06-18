@@ -13,11 +13,11 @@ const Profile = () => {
     const params = useParams()
     useEffect(() => {
         const fetchPosts = async () => {
-            const res = await axios.get(`https://socialspark-backend.onrender.com/api/user?username=${params.username}`);
+            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?username=${params.username}`);
             setUser(res.data);
         };
         fetchPosts();
-    }, []);
+    }, [params.username]);
 
     return (
         <div>

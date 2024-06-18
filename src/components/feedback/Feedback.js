@@ -10,15 +10,18 @@ const Feedback = ({ username }) => {
 
     useEffect(() => {
         const fetchPosts = async () => {
-            const res = username ? await axios.get(`https://socialspark-backend.onrender.com/api/posts/profile/${username}`) : await axios.get(`https://socialspark-backend.onrender.com/api/posts/timeline/${user._id}`);
-            setPosts(res.data);
-            }
-            fetchPosts();
-        }, []);
+            const res = username ? await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/profile/${username}`) : await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/timeline/${user._id}`);
+            setPosts(res.data.sort((p1, p2) => {
+                return new Date(p2.createdAt) - new Date(p1.createdAt)
+            }));
+        }
+        fetchPosts();
+    }, []);
 
     return (
         <div className='feedback p-3'>
-            <SharePost />
+            {(!username || username === user.username) && <SharePost />}
+            {posts.length === 0 && (<p className="text-center" style={{marginTop:"150px"}}>no post found! </p>)}
             {posts.map((post) => <ViewPost key={post._id} post={post} />)}
         </div>
     )
