@@ -39,23 +39,23 @@ const Sidebar = () => {
       <hr />
 
       <div className="menu-user d-flex align-items-center">
-        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="" />
+        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends images" />
          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
       </div>
       <div className="menu-user d-flex align-items-center">
-        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="" />
+        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends images" />
          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
       </div>
       <div className="menu-user d-flex align-items-center">
-        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="" />
+        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends images" />
          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
       </div>
       <div className="menu-user d-flex align-items-center">
-        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="" />
+        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends images" />
          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
       </div>
       <div className="menu-user d-flex align-items-center">
-        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="" />
+        <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends images" />
          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
       </div>
     </div>

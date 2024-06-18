@@ -64,7 +64,7 @@ const ViewPost = ({ post }) => {
           <p>{post.desc}</p>
         </div>
         <div className="post-img">
-          <img className="img-fluid post-img d-flex mx-auto" src={post.img} alt="" />
+          <img className="img-fluid post-img d-flex mx-auto" src={post.img} alt="post images" />
         </div>
         <div className="post-review d-flex justify-content-between align-items-center mt-2">
           <div>

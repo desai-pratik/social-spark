@@ -21,7 +21,7 @@ const Login = () => {
             <div className="container ">
                 <div className="row vh-100">
                     <div className="col-md-6 flex-column d-flex justify-content-center align-items-center">
-                        <img src="/assets/logo-light-bg-remove.PNG" className='w-50' alt="" />
+                        <img src="/assets/logo-light-bg-remove.PNG" className='w-50' alt="logo" />
                         <h4 className='mt-3 w-75 ms-auto'>Connect with friends and the world around you on SocialSpark.</h4>
                     </div>
                     <div className="col-md-6 flex-column d-flex justify-content-center ">
