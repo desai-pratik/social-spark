@@ -34,7 +34,7 @@ const Login = () => {
                                 ></i>
                             </div>
                             <button type='submit' className='login-btn mt-2'>{isFetching ? "Loading...":"Login"}</button>
-                            <a href="/" className='text-center d-block mx-auto my-3'>Forgot Password?</a>
+                            <span className='text-center d-block mx-auto my-3'>Forgot Password?</span>
                             <button type='button' className='create-ac-btn'>Create a New Account</button>
                         </form>
                     </div>

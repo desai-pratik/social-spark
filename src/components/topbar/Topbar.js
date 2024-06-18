@@ -22,14 +22,14 @@ const Topbar = () => {
                         </form>
                     </div>
                     <div className="ms-auto d-flex align-items-center">
-                        <ul className="navbar-nav  mb-2 mb-lg-0">
+                        {/* <ul className="navbar-nav  mb-2 mb-lg-0">
                             <li className="nav-item">
                                 <a className="nav-link text-white" href="#">Home</a>
                             </li>
                             <li className="nav-item">
                                 <a className="nav-link text-white" href="#">Timeline</a>
                             </li>
-                        </ul>
+                        </ul> */}
                         <div className="icons d-flex gap-4 text-white mx-4">
                             <div className=" position-relative notification">
                                 <i className="bi bi-person-fill fs-5"></i>
