@@ -1,21 +1,19 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import "./sharePost.css";
-import { AuthContext } from "../../context/AuthContext";
 import axios from "axios";
 import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
+
 
 const SharePost = () => {
-
-  const { user } = useContext(AuthContext);
+  const user = useSelector(state => state.auth.user);
   const desc = useRef();
   const [file, setFile] = useState(null);
 
   const handelSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(file);
-
     try {
       let downloadURL = "";
       if (file) {
@@ -35,16 +33,23 @@ const SharePost = () => {
       desc.current.value = "";
       setFile(null);
     } catch (error) {
-      console.error("Error uploading file:", error);
+      toast.error(`${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
-
-  }
+  };
 
   return (
-    <form className="p-3 shadow-sm rounded border-1" onSubmit={handelSubmit}>
+    <form className="p-3 shadow-sm rounded border border-light-subtle" onSubmit={handelSubmit}>
       <div className="d-flex">
         <div className="user-img me-2">
-          <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} alt="user image" />
+          <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className="object-fit-cover" alt={user.username} />
         </div>
         <input type="text" placeholder={"what's in your mind " + user.username + "?"} ref={desc} className="border-0 post-text w-100" />
       </div>
@@ -52,7 +57,10 @@ const SharePost = () => {
       {file && (
         <div className="shareImgContainer position-relative my-3">
           <img src={URL.createObjectURL(file)} className="img-fluid post-img d-flex mx-auto" alt="posted image" />
-          <i className="bi bi-x-circle position-absolute top-0 end-0 fs-3 cursor-pointer p-2 bg-secondary text-white" onClick={() => setFile(null)}></i>
+          <i
+            className="bi bi-x-circle position-absolute top-0 end-0 fs-3 cursor-pointer p-2 bg-secondary text-white"
+            onClick={() => setFile(null)}
+          ></i>
         </div>
       )}
       <div className="d-flex justify-content-between">
@@ -75,7 +83,9 @@ const SharePost = () => {
             Feelings
           </div>
         </div>
-        <button className="custome-btn" type="submit">Share</button>
+        <button className="custome-btn" type="submit">
+          Share
+        </button>
       </div>
     </form>
   );

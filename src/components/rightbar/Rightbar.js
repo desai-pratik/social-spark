@@ -1,12 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react'
-import "./rightbar.css"
+import React, { useEffect, useState } from 'react';
+import "./rightbar.css";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const Rightbar = ({ user }) => {
 
-  const { user: currentUser, dispatch } = useContext(AuthContext)
+  const currentUser = useSelector(state => state.auth.user);
 
   const HomeRightbar = () => {
     return (
@@ -66,15 +67,23 @@ const Rightbar = ({ user }) => {
           await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/unfollow`, {
             userId: currentUser._id,
           });
-          dispatch({ type: "UNFOLLOW", payload: user._id })
+          // dispatch({ type: "UNFOLLOW", payload: user._id })
         } else {
           await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/follow`, {
             userId: currentUser._id,
           });
-          dispatch({ type: "FOLLOW", payload: user._id })
+          // dispatch({ type: "FOLLOW", payload: user._id })
         }
       } catch (error) {
-        console.log(error);
+        toast.error(`${error}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+      });
       }
       setFollowed(!followed);
     }

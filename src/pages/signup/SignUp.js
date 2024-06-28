@@ -1,40 +1,77 @@
-import React, { useRef, useState } from 'react'
-import "./sign-up.css"
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-import { auth, provider, signInWithPopup } from '../../firebase';
+import React, { useState } from "react";
+import "./sign-up.css";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { auth, provider, signInWithPopup } from "../../firebase";
+import { useFormik } from 'formik';
+import * as yup from 'yup';
+import { toast } from "react-toastify";
+
 
 const SignUp = () => {
     const [passwordShown, setPasswordShown] = useState(false);
     const navigate = useNavigate();
-    const username = useRef();
-    const email = useRef();
-    const password = useRef();
-    const confirm_password = useRef();
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (password.current.value !== confirm_password.current.value) {
-            confirm_password.current.setCustomValidity("password don't match!")
-        } else {
-            const user = {
-                username: username.current.value,
-                email: email.current.value,
-                password: password.current.value,
-                confirm_password: confirm_password.current.value,
-            }
-            console.log(user);
+    const validationSchema = yup.object({
+        username: yup.string().min(3, 'Username must be at least 3 characters long').required('Username is required'),
+        email: yup.string().email('Invalid email address').required('Email is required'),
+        password: yup.string().min(6, 'Password must be at least 6 characters long').required('Password is required'),
+        confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Confirm Password is required')
+    });
+
+    const formik = useFormik({
+        initialValues: {
+            username: '',
+            email: '',
+            password: '',
+            confirm_password: ''
+        },
+        validationSchema: validationSchema,
+        onSubmit: async (values) => {
+            setLoading(true);
             try {
-                await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, user);
-                navigate('/login');
-            } catch (err) {
-                console.log(err);
+                await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, values);
+                navigate("/login");
+                setLoading(false);
+            } catch (error) {
+                toast.error(`${error}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                });
             }
         }
-    }
+    });
+
+
+    // const handleSubmit = async (e) => {
+    //     e.preventDefault();
+    //     if (password.current.value !== confirm_password.current.value) {
+    //         confirm_password.current.setCustomValidity("password don't match!");
+    //     } else {
+    //         const user = {
+    //             username: username.current.value,
+    //             email: email.current.value,
+    //             password: password.current.value,
+    //             confirm_password: confirm_password.current.value,
+    //         };
+    //         try {
+    //             await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, user);
+    //             navigate("/login");
+    //         } catch (err) {
+    //             console.log(err);
+    //         }
+    //     }
+    // };
 
     const handleGoogleSignIn = async () => {
         try {
+            setLoading(true);
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
             const newUser = {
@@ -44,40 +81,101 @@ const SignUp = () => {
                 confirm_password: user.uid,
             };
             await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, newUser);
-            navigate('/login');
+            navigate("/login");
+            setLoading(false);
         } catch (error) {
-            console.error("Error during Google sign-in:", error);
+            toast.error(`${error}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+            });
         }
     };
 
     return (
-        <div className='sign-up'>
+        <div className="sign-up">
             <div className="container ">
                 <div className="row vh-100">
                     <div className="col-md-6 flex-column d-flex justify-content-center align-items-center">
-                        <img src="/assets/logo-light-bg-remove.PNG" className='w-50' alt="logo" />
-                        <h4 className='mt-3 w-75 ms-auto'>Connect with friends and the world around you on SocialSpark.</h4>
+                        <img src="/assets/logo-light-bg-remove.PNG" className="w-50" alt="logo" />
+                        <h4 className="mt-3 w-75 ms-auto">Connect with friends and the world around you on SocialSpark.</h4>
                     </div>
                     <div className="col-md-6 flex-column d-flex justify-content-center ">
-                        <form action="" className='bg-white p-5 rounded me-5' onSubmit={handleSubmit}>
-                            <input type="text" className='w-100 p-2 fs-6 rounded border-1 my-2 ' placeholder='username' ref={username} required />
-                            <input type="email" className='w-100 p-2 fs-6 rounded border-1 my-2 ' placeholder='Email' ref={email} required />
-                            <input type="password" className='w-100 p-2 fs-6 rounded border-1 my-2 ' placeholder='Password' ref={password} required minLength={6} />
-                            <div className='position-relative'>
-                                <input type={passwordShown ? 'text' : 'password'} className='w-100 p-2 fs-6 rounded border-1 my-2 ' placeholder='Confirm password' ref={confirm_password} required minLength={6} />
-                                <i className={`bi ${passwordShown ? 'bi-eye-slash-fill' : 'bi-eye-fill'} eye-icon`}
+                        <form action="" className="bg-white p-5 rounded me-5" onSubmit={formik.handleSubmit}>
+                            {/* <input type="text" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="username" ref={username} required /> */}
+                            <input
+                                type="text"
+                                className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.username && formik.errors.username ? 'is-invalid' : ''}`}
+                                placeholder="Username"
+                                {...formik.getFieldProps('username')}
+                            />
+                            {formik.touched.username && formik.errors.username ? (
+                                <div className="invalid-feedback">{formik.errors.username}</div>
+                            ) : null}
+
+                            {/* <input type="email" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="Email" ref={email} required /> */}
+                            <input
+                                type="email"
+                                className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
+                                placeholder="Email"
+                                {...formik.getFieldProps('email')}
+                            />
+                            {formik.touched.email && formik.errors.email ? (
+                                <div className="invalid-feedback">{formik.errors.email}</div>
+                            ) : null}
+
+                            {/* <input type="password" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="Password" ref={password} required minLength={6} /> */}
+                            <input
+                                type="password"
+                                className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
+                                placeholder="Password"
+                                {...formik.getFieldProps('password')}
+                            />
+                            {formik.touched.password && formik.errors.password ? (
+                                <div className="invalid-feedback">{formik.errors.password}</div>
+                            ) : null}
+
+                            <div className="position-relative">
+                                {/* <input
+                                    type={passwordShown ? "text" : "password"}
+                                    className="w-100 p-2 fs-6 rounded border-1 my-2 "
+                                    placeholder="Confirm password"
+                                    ref={confirm_password}
+                                    required
+                                    minLength={6}
+                                /> */}
+                                <input
+                                    type={passwordShown ? "text" : "password"}
+                                    className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.confirm_password && formik.errors.confirm_password ? 'is-invalid' : ''}`}
+                                    placeholder="Confirm Password"
+                                    {...formik.getFieldProps('confirm_password')}
+                                />
+                                <i
+                                    className={`bi ${passwordShown ? "bi-eye-slash-fill" : "bi-eye-fill"} eye-icon`}
                                     onClick={() => setPasswordShown(!passwordShown)}
                                 ></i>
                             </div>
-                            <button type='submit' className='sign-up-btn mt-2'>SignUp</button>
-                            <button type='button' className='google-login mt-3' onClick={handleGoogleSignIn}><i className="bi bi-google fs-5 text-danger me-2"></i> SignUp with Google</button>
-                            <Link to="/login" type='button' className='create-ac-btn mt-3'>Login into Account</Link>
+                            {formik.touched.confirm_password && formik.errors.confirm_password ? (
+                                <div className="invalid-feedback">{formik.errors.confirm_password}</div>
+                            ) : null}
+
+                            <button type="submit" className="sign-up-btn mt-2"> {loading ? 'Loading...' : 'SignUp'}</button>
+                            <button type="button" className="google-login mt-3" onClick={handleGoogleSignIn}>
+                                <img src="/assets/google-logo.png" className='me-2' width={"30px"} alt="google" />{loading ? 'Loading...' : 'SignUp with Google'}
+                            </button>
+                            <Link to="/login" type="button" className="create-ac-btn mt-3">
+                                Login into Account
+                            </Link>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default SignUp
+export default SignUp;

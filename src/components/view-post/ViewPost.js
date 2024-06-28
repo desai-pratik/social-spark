@@ -1,15 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./viewPost.css";
 import axios from "axios";
 import { format } from "timeago.js";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
+
 
 const ViewPost = ({ post }) => {
   const [postUser, setPostUser] = useState({});
   const [like, setLike] = useState(post.likes.length);
   const [islike, setIslike] = useState(false);
-  const { user } = useContext(AuthContext);
+  const user = useSelector(state => state.auth.user);
 
 
   useEffect(() => {
@@ -17,11 +19,23 @@ const ViewPost = ({ post }) => {
   }, []);
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?userId=${post.userId}`);
-      setPostUser(res.data);
-    };
-    fetchPosts();
+    try {
+      const fetchPosts = async () => {
+        const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?userId=${post.userId}`);
+        setPostUser(res.data);
+      };
+      fetchPosts();
+    } catch (error) {
+      toast.error(`${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
   }, []);
 
   const hendallike = async (id) => {
@@ -33,23 +47,32 @@ const ViewPost = ({ post }) => {
         console.log("post is like");
         setLike(like + 1);
         setIslike(true);
-      } else if(res.data === "The post has been disliked.") {
+      } else if (res.data === "The post has been disliked.") {
         console.log("post is dislike");
         setLike(like - 1);
         setIslike(false);
       }
-    } catch (err) {
-      console.error("Error liking the post:", err);
+    } catch (error) {
+      toast.error(`${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      console.error("Error liking the post:", error);
     }
   };
 
   return (
     <>
-      <div className="p-3 my-3 shadow-sm border-1">
+      <div className="p-3 my-3 shadow-sm border border-light-subtle">
         <div className="post-header d-flex justify-content-between">
           <div className="user-img d-flex align-items-center gap-2 me-2">
             <Link className="navbar-brand" to={"profile/" + postUser.username}>
-              <img src={postUser.profilePicture ? postUser.profilePicture : "/assets/default-user.jpg"} alt="user image" />
+              <img src={postUser.profilePicture ? postUser.profilePicture : "/assets/default-user.jpg"} alt={postUser.username} className="object-fit-cover" />
             </Link>
             <Link className="navbar-brand" to={"profile/" + postUser.username}>
               <h5 className="m-0">{postUser.username}</h5>

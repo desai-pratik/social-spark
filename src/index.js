@@ -1,13 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { AuthContextProvider } from './context/AuthContext';
+import { Provider } from "react-redux";
+import appStore from './context/appStore';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
-  <React.StrictMode>
-    <AuthContextProvider>
+  <Provider store={appStore}>
+    {/* <React.StrictMode> */}
+    {/* <AuthContextProvider> */}
       <App />
-    </AuthContextProvider>
-  </React.StrictMode>
+      <ToastContainer />
+    {/* </AuthContextProvider> */}
+    {/*  </React.StrictMode> */}
+  </Provider>
 );

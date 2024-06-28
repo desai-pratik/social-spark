@@ -10,20 +10,19 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
-import { AuthContext } from './context/AuthContext';
-import { useContext } from 'react';
-
+import { useSelector } from 'react-redux';
+import Chat from './pages/chat/Chat';
 function App() {
-
-  const { user } = useContext(AuthContext)
+  const user = useSelector(state => state.auth.user);
 
   return (
     <Router>
       <Routes>
-      <Route path="/" element={user ? <Home /> : <SignUp />} />
+        <Route path="/" exact element={user !== null ? <Home /> : <SignUp />} />
+        <Route path="/chats" exact element={user !== null ? <Chat /> : <SignUp />} />
         <Route path="/profile/:username" exact element={<Profile />} />
-        <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-        <Route path="/sign-up" element={user ? <Navigate to="/" /> : <SignUp />} />
+        <Route path="/login" element={user !== null ? <Navigate to="/" /> : <Login />} />
+        <Route path="/sign-up" element={user !== null ? <Navigate to="/" /> : <SignUp />} />
       </Routes>
     </Router>
 

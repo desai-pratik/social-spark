@@ -7,16 +7,30 @@ import "./profile.css"
 import ProfileInfo from '../../components/profile-info/ProfileInfo'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 const Profile = () => {
     const [user, setUser] = useState({});
-    const params = useParams()
+    const params = useParams();
+
     useEffect(() => {
-        const fetchPosts = async () => {
-            const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?username=${params.username}`);
-            setUser(res.data);
+        const fetchUser = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user?username=${params.username}`);
+                setUser(res.data);
+            } catch (error) {
+                toast.error(`${error}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                  });
+            }
         };
-        fetchPosts();
+        fetchUser();
     }, [params.username]);
 
     return (
@@ -29,6 +43,7 @@ const Profile = () => {
                     </div>
                     <div className="col p-0">
                         <ProfileInfo user={user} />
+
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col p-0">
