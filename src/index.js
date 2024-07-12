@@ -5,16 +5,19 @@ import { Provider } from "react-redux";
 import appStore from './context/appStore';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import theme from './theme/theme';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <Provider store={appStore}>
-    {/* <React.StrictMode> */}
-    {/* <AuthContextProvider> */}
+    <ThemeProvider theme={theme}>
+      {/* <React.StrictMode> */}
       <App />
+      <CssBaseline />
       <ToastContainer />
-    {/* </AuthContextProvider> */}
-    {/*  </React.StrictMode> */}
-  </Provider>
+      {/*  </React.StrictMode> */}
+    </ThemeProvider >
+  </Provider >
 );

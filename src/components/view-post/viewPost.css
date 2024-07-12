@@ -45,3 +45,8 @@
     min-width: 400px;
     object-fit: contain;
 }
+
+aside{
+    width: 300px !important;
+    overflow: hidden;
+}

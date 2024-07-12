@@ -6,6 +6,8 @@ import { auth, provider, signInWithPopup } from "../../firebase";
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from "react-toastify";
+import { tostConfig } from "../../config/interface";
+import { LoadingButton } from "@mui/lab";
 
 
 const SignUp = () => {
@@ -35,39 +37,10 @@ const SignUp = () => {
                 navigate("/login");
                 setLoading(false);
             } catch (error) {
-                toast.error(`${error}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                toast.error(`${error}`, tostConfig);
             }
         }
     });
-
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     if (password.current.value !== confirm_password.current.value) {
-    //         confirm_password.current.setCustomValidity("password don't match!");
-    //     } else {
-    //         const user = {
-    //             username: username.current.value,
-    //             email: email.current.value,
-    //             password: password.current.value,
-    //             confirm_password: confirm_password.current.value,
-    //         };
-    //         try {
-    //             await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/register`, user);
-    //             navigate("/login");
-    //         } catch (err) {
-    //             console.log(err);
-    //         }
-    //     }
-    // };
 
     const handleGoogleSignIn = async () => {
         try {
@@ -84,15 +57,7 @@ const SignUp = () => {
             navigate("/login");
             setLoading(false);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
     };
 
@@ -162,8 +127,10 @@ const SignUp = () => {
                             {formik.touched.confirm_password && formik.errors.confirm_password ? (
                                 <div className="invalid-feedback">{formik.errors.confirm_password}</div>
                             ) : null}
-
-                            <button type="submit" className="sign-up-btn mt-2"> {loading ? 'Loading...' : 'SignUp'}</button>
+{/*  <button type="submit" className="sign-up-btn mt-2"> {loading ? 'Loading...' : 'SignUp'}</button> */}
+                          <LoadingButton type='submit' variant="contained" className='sign-up-btn mt-3' loading={loading}>
+                                <span>SignUp</span>
+                            </LoadingButton>
                             <button type="button" className="google-login mt-3" onClick={handleGoogleSignIn}>
                                 <img src="/assets/google-logo.png" className='me-2' width={"30px"} alt="google" />{loading ? 'Loading...' : 'SignUp with Google'}
                             </button>

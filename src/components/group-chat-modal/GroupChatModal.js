@@ -2,6 +2,9 @@ import axios from 'axios';
 import React, { useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { tostConfig } from '../../config/interface';
+import { LoadingButton } from '@mui/lab';
+import { Button } from '@mui/material';
 
 const GroupChatModal = ({ chats, setChats }) => {
     const [groupChatName, setGroupChatName] = useState();
@@ -22,28 +25,12 @@ const GroupChatModal = ({ chats, setChats }) => {
             const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/?search=${search}`, config);
             setSearchResults(res.data);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
     }
     const handleSubmit = async () => {
         if (!selectedUsers || !groupChatName) {
-            toast.error('Please fill all the felids.', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error('Please fill all the felids.', tostConfig);
             return;
         }
         try {
@@ -57,54 +44,22 @@ const GroupChatModal = ({ chats, setChats }) => {
                 users: JSON.stringify(selectedUsers.map((u) => u._id)),
             }, config);
             setChats([...chats, res.data]);
-            toast.success(`${groupChatName} is Created.`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.success(`${groupChatName} is Created.`, tostConfig);
         } catch (error) {
-            toast.error(`Failed to create the chat!`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`Failed to create the chat!`, tostConfig);
         }
     }
     const handleGroup = (userToAdd) => {
         try {
             if (selectedUsers.some(user => user._id === userToAdd._id)) {
-                toast.error(`${userToAdd.username} Already Added!`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                toast.error(`${userToAdd.username} Already Added!`, tostConfig);
                 return;
             }
             setSelectedUsers([...selectedUsers, userToAdd])
             setSearch('')
             setSearchResults([]);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
 
     }
@@ -146,7 +101,8 @@ const GroupChatModal = ({ chats, setChats }) => {
                             ))}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn text-white" style={{ backgroundColor: "#21aeff" }} onClick={handleSubmit} data-bs-dismiss="modal">Create Group</button>
+                            {/* <button type="button" className="btn text-white" style={{ backgroundColor: "#21aeff" }} onClick={handleSubmit} data-bs-dismiss="modal">Create Group</button> */}
+                            <Button variant="contained" color="primary" onClick={handleSubmit} data-bs-dismiss="modal" >Create Group</Button>
                         </div>
                     </form>
                 </div>

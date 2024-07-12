@@ -4,6 +4,9 @@
 .cursor-pointer{
   cursor: pointer;
 }
+.capitalize{
+  text-transform: capitalize;
+}
 .height-100{
   height: calc(100vh - 60px); 
 }

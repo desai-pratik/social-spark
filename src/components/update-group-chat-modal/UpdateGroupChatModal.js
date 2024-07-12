@@ -3,6 +3,8 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { addSelectedChat } from '../../context/chatSlice';
+import { tostConfig } from '../../config/interface';
+import { Button } from '@mui/material';
 
 const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
     const user = useSelector(state => state.auth.user);
@@ -15,15 +17,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
 
     const removeUser = async (user1) => {
         if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
-            toast.error(`Only admins can remove someone!`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`Only admins can remove someone!`, tostConfig);
         }
 
         try {
@@ -41,15 +35,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             setFetchAgain(!fetchAgain);
             fetchMessage();
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
 
     }
@@ -72,15 +58,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             setFetchAgain(!fetchAgain);
 
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
+            toast.error(`${error}`, tostConfig);
         }
         setRenameGroupChat('');
     }
@@ -97,41 +75,17 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/?search=${search}`, config);
             setSearchResults(res.data);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
+            toast.error(`${error}`, tostConfig);
         }
     }
 
     const handleGroup = async (userToAdd) => {
         if (selectedChat.users.some(user => user._id === userToAdd._id)) {
-            toast.error(`${userToAdd.username} Already Added!`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${userToAdd.username} Already Added!`, tostConfig);
             return;
         }
         if (selectedChat.groupAdmin._id !== user._id) {
-            toast.error(`Only admins can add someone!`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`Only admins can add someone!`, tostConfig);
             return;
         }
         try {
@@ -148,15 +102,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             dispatch(addSelectedChat(res.data));
             setFetchAgain(!fetchAgain);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-              });
+            toast.error(`${error}`, tostConfig);
         }
         setSearch('')
         setSearchResults([]);
@@ -175,10 +121,10 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
                         <div className="modal-body">
                             <div className="d-flex gap-2 my-3">
                                 <input type="text" className="form-control" placeholder="Rename Group" value={renameGroupChat} onChange={(e) => setRenameGroupChat(e.target.value)} />
-                                <button className="custom-btn" onClick={(e) => handleRename(e)} data-bs-dismiss="modal">Update</button>
+                                {/* <button className="custom-btn" onClick={(e) => handleRename(e)} data-bs-dismiss="modal">Update</button> */}
+                                <Button variant="contained" onClick={(e) => handleRename(e)} color="primary" data-bs-dismiss="modal" >Update</Button>
                             </div>
                             <input type="text" className="form-control" placeholder="Add Users" value={search} onChange={(e) => handleSearch(e.target.value)} />
-
 
                             {searchResults?.slice(0, 4).map(user => (
                                 <div onClick={() => handleGroup(user)} className='d-flex align-items-center rounded p-2 bg-info-subtle cursor-pointer my-2'>

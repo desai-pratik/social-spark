@@ -2,12 +2,22 @@ import React, { useEffect, useState } from 'react';
 import "./rightbar.css";
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { editUser } from '../../context/authSlice';
+import { tostConfig } from '../../config/interface';
+import { getSenderDetails } from '../../chatLogic';
+import { Button, Typography } from '@mui/material';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { AddCircleOutline, RemoveCircleOutline } from '@mui/icons-material';
 
-const Rightbar = ({ user }) => {
+const Rightbar = ({ user, chat }) => {
 
   const currentUser = useSelector(state => state.auth.user);
+  const selectedChat = useSelector(state => state.chat.selectedChat);
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const HomeRightbar = () => {
     return (
@@ -46,53 +56,51 @@ const Rightbar = ({ user }) => {
     useEffect(() => {
       const getFriends = async () => {
         try {
-          const friendsist = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/friends/${user._id}`);
-          setFriends(friendsist.data)
-        } catch (err) {
-          console.log(err);
+          const friendsList = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/friends/${user._id}`);
+          setFriends(friendsList.data);
+        } catch (error) {
+          toast.error(`${error.response.data}`, tostConfig);
         }
       }
       if (user._id) {
         getFriends();
       }
-    }, [user._id])
+    }, [user._id]);
 
     useEffect(() => {
-      setFollowed(currentUser.followings.includes(user?._id))
-    }, [currentUser, user.id]);
+      setFollowed(currentUser.followings.includes(user._id));
+    }, [currentUser, user, followed]);
 
-    const handleClick = async () => {
+    const handleFollow = async () => {
       try {
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${currentUser.token}`
+          }
+        }
         if (followed) {
-          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/unfollow`, {
-            userId: currentUser._id,
-          });
-          // dispatch({ type: "UNFOLLOW", payload: user._id })
+          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/unfollow`, {}, config);
+          setFollowed(true);
+          dispatch(editUser({ followings: currentUser.followings.filter(id => id !== user._id) }));
         } else {
-          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/follow`, {
-            userId: currentUser._id,
-          });
-          // dispatch({ type: "FOLLOW", payload: user._id })
+          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${user._id}/follow`, {}, config);
+          setFollowed(false);
+          dispatch(editUser({ followings: [...currentUser.followings, user._id] }));
         }
       } catch (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-      });
+        toast.error(error.response.data.message, tostConfig);
       }
-      setFollowed(!followed);
-    }
+    };
+
     return (
       <div className='rigthbar pt-3 pe-3 position-sticky overflow-y-auto'>
         {user.username !== currentUser.username && (
-          <button className="btn-follow" onClick={handleClick}>{followed ? "Unfollow" : "Follow"} <i className="bi bi-plus-circle"></i></button>
+          <LoadingButton variant="contained" color="primary" loading={loading} endIcon={!followed ? <AddCircleOutline /> : <RemoveCircleOutline />} onClick={handleFollow}>
+            <span>{followed ? "Unfollow" : "Follow"}</span>
+          </LoadingButton>
         )}
-        <h5>User Information</h5>
+        <Typography variant='h5'>User Information</Typography>
         <b>City:</b> <span>{user.city}</span> <br />
         <b>From:</b> <span>{user.from}</span> <br />
         <b>Relationship:</b> <span>{user.relationship}</span> <br />
@@ -102,23 +110,108 @@ const Rightbar = ({ user }) => {
           {friends.length === 0 && <p className="mt-3">No friends found!</p>}
           <div className="row">
             {friends.map((friend) => (
-              <Link to={'/profile/' + friend.username} key={friend._id} className='text-decoration-none'>
-                <div className="col-md-4 p-2" >
-                  <img src={friend.profilePicture ? friend.profilePicture : "/assets/default-user.jpg"} className='w-100 ' alt="friend images" />
-                  <small className='text-center d-block'>{friend.username}</small>
-                </div>
-              </Link>
+              <div className="col-md-4 p-2" >
+                <Link to={'/profile/' + friend.username} key={friend._id} className='text-decoration-none'>
+                  <img src={friend.profilePicture || "/assets/default-user.jpg"} className='w-100 ' alt="friend images" />
+                  <small className='text-center d-block capitalize'>{friend.username}</small>
+                </Link>
+              </div>
             ))}
           </div>
         </div>
+      </div>
+    );
+  }
 
+  const ChatRightbar = () => {
+    const [followed, setFollowed] = useState(false);
+    const senderDetails = selectedChat && getSenderDetails(currentUser, selectedChat.users);
+
+    useEffect(() => {
+      setFollowed(currentUser.followings.includes(senderDetails?._id));
+    }, [senderDetails, followed]);
+
+    const handleFollow = async () => {
+      try {
+        setLoading(true);
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${currentUser.token}`
+          }
+        }
+        if (followed) {
+          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${senderDetails._id}/unfollow`, {}, config);
+          setFollowed(true);
+          dispatch(editUser({ followings: currentUser.followings.filter(id => id !== senderDetails._id) }));
+        } else {
+          await axios.put(`${process.env.REACT_APP_API_BASE_URL}/user/${senderDetails._id}/follow`, {}, config);
+          setFollowed(false);
+          dispatch(editUser({ followings: [...currentUser.followings, senderDetails._id] }));
+        }
+        setLoading(false);
+      } catch (error) {
+        toast.error(error.response.data.message, tostConfig);
+      }
+    };
+    return (
+      <div className='rigthbar pt-3 pe-3 position-sticky overflow-y-auto'>
+        {selectedChat ?
+          selectedChat.isGroupChat ? (
+            <div className='text-center'>
+              <img src="/assets/default-users.png" alt={selectedChat.chatName} className='rounded-circle' style={{ width: "150px" }} title={selectedChat.chatName} />
+              <h3 className='capitalize'>{selectedChat.chatName}</h3>
+              <p className=''> {selectedChat.users.length} Members</p>
+              <div className="container-fluid">
+                <div className="row">
+                  {selectedChat.users.map((member) => (
+                    <div className="col-md-4 p-2">
+                      <Link to={'/profile/' + member.username} key={member._id} className='text-decoration-none'>
+                        <img src={member.profilePicture || "/assets/default-user.jpg"} className='w-100 rounded-circle' alt={member.username} />
+                        <small className='text-center d-block capitalize'>{member.username}</small>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* <div className="container-fluid p-1">
+                <div className="row">
+                  {selectedChat.users.map((friend) => (
+                    <div className="col-md-4 p-2" >
+                      <Link to={'/profile/' + friend.username} key={friend._id} className='text-decoration-none'>
+                        <img src={friend.profilePicture || "/assets/default-user.jpg"} className='rounded-circle' alt="friend images" />
+                        <small className='text-center d-block'>{friend.username}</small>
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div> */}
+
+            </div>
+          ) : (
+            <div className='text-center'>
+              <img src={senderDetails.profilePicture || "/assets/default-user.jpg"} className='rounded-circle' style={{ width: "150px" }} />
+              <h3 className='capitalize'>{senderDetails.username}</h3>
+              <h6 className=''>{senderDetails.email}</h6>
+              <LoadingButton variant="contained" color="primary" loading={loading} endIcon={!followed ? <AddCircleOutline /> : <RemoveCircleOutline />} onClick={handleFollow}>
+                <span>{followed ? "Unfollow" : "Follow"}</span>
+              </LoadingButton>
+              <p>Followers : {senderDetails.followers ? senderDetails.followers.length : "0"}</p>
+            </div>
+          )
+          : (
+            <p className="text-center">no chat is selected!!</p>
+          )}
       </div>
     );
   }
 
   return (
     <>
-      {user ? <ProfileRightbar /> : <HomeRightbar />}
+      {user && <ProfileRightbar />}
+      {chat && <ChatRightbar />}
+      {(!user && !chat) && (<HomeRightbar />)}
     </>
   )
 }

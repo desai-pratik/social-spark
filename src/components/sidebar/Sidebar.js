@@ -3,21 +3,24 @@ import "./sidebar.css"
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from "axios";
-import { getSender, getSenderEmail, getSenderPicture } from '../../chatLogic';
+import { getSenderDetails } from '../../chatLogic';
 import GroupChatModal from '../group-chat-modal/GroupChatModal';
 import { addSelectedChat } from '../../context/chatSlice';
 import { toast } from 'react-toastify';
+import { tostConfig } from '../../config/interface';
+import { Button } from '@mui/material';
+import { AddCircleOutline } from '@mui/icons-material';
 
 
 const Sidebar = ({ Chat, fetchAgain }) => {
   const HomeSidebar = () => {
     return (
       <div className='sidebar-container p-3'>
-        <Link to="/" className="menu d-flex align-items-center my-2 p-2">
+        <Link to="/" className="menu d-flex align-items-center text-decoration-none my-2 p-2">
           <i className="bi bi-rss"></i>
           <h6 className="menu-text ms-3 m-0">Home</h6>
         </Link>
-        <Link to="/chats" className="menu d-flex align-items-center my-2 p-2">
+        <Link to="/chats" className="menu d-flex align-items-center text-decoration-none my-2 p-2">
           <i className="bi bi-chat-left-dots"></i>
           <h6 className="menu-text ms-3 m-0">Chats</h6>
         </Link>
@@ -45,7 +48,7 @@ const Sidebar = ({ Chat, fetchAgain }) => {
           <i className="bi bi-mortarboard"></i>
           <h6 className="menu-text ms-3 m-0">Courses</h6>
         </div>
-        <button className="custom-btn">Show More</button>
+        <Button variant="contained" color="primary">Show More</Button>
         <hr />
 
         <div className="menu-user d-flex align-items-center">
@@ -79,13 +82,15 @@ const Sidebar = ({ Chat, fetchAgain }) => {
     const [searchResults, setSearchResults] = useState([]);
     const [chats, setChats] = useState([]);
     const dispatch = useDispatch();
+    // const senderDetails = selectedChat && getSenderDetails(user, selectedChat.users);
 
     useEffect(() => {
       fetchChats();
-    }, [fetchAgain]);
+    }, []);
 
     const fetchChats = async () => {
       try {
+        // dispatch(toggleLoading(true))
         const config = {
           headers: {
             authorization: `Bearer ${user.token}`
@@ -93,17 +98,9 @@ const Sidebar = ({ Chat, fetchAgain }) => {
         };
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/chats`, config);
         setChats(res.data);
-
+        // dispatch(toggleLoading(false))
       } catch (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(`${error}`, tostConfig);
       }
     }
 
@@ -117,15 +114,7 @@ const Sidebar = ({ Chat, fetchAgain }) => {
         const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/user/?search=${search}`, config);
         setSearchResults(res.data);
       } catch (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(`${error}`, tostConfig);
       }
     };
 
@@ -139,22 +128,11 @@ const Sidebar = ({ Chat, fetchAgain }) => {
         };
         const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/chats`, { userId }, config);
         if (!chats.find((c) => c._id === res.data._id)) { setChats([res.data, ...chats]); }
-        // setSelectedChat(res.data);
-
         dispatch(addSelectedChat(res.data));
-
         setSearchResults([]);
         setSearch("");
       } catch (error) {
-        toast.error(`${error}`, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
+        toast.error(`${error}`, tostConfig);
       }
     }
 
@@ -163,7 +141,7 @@ const Sidebar = ({ Chat, fetchAgain }) => {
         <div className='sidebar-first pt-3'>
           <div className="d-flex align-items-center border">
             <input type="text" className="p-1 rounded outline-none border-0" value={search} onChange={(e) => setSearch(e.target.value)} placeholder='Search User' />
-            <i className="bi bi-search p-2" onClick={handelSearch}></i>
+            <i className="bi bi-search p-2 cursor-pointer" onClick={handelSearch}></i>
           </div>
           <div className='search-results'>
             {searchResults.map(result => (
@@ -176,25 +154,27 @@ const Sidebar = ({ Chat, fetchAgain }) => {
               </div>
             ))}
           </div>
-          <hr />
-          <div className="d-flex justify-content-between align-items-center position-sticky top-0 pb-2">
-            <h5 className='m-0'>My Chats</h5>
-            <button type="button" className="p-2 border-0 bg-light" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          <hr className='mb-1'/>
+          <div className="d-flex justify-content-between align-items-center position-sticky top-0 pb-1">
+            <h5 className='m-0'>Chats</h5>
+            {/* <button type="button" className="p-2 border-0 bg-light" data-bs-toggle="modal" data-bs-target="#exampleModal">
               <i className="bi bi-plus-circle"></i> Create Group
-            </button>
+            </button> */}
+            <Button variant="contained" startIcon={<AddCircleOutline />} color="primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Group</Button>
           </div>
         </div>
         <GroupChatModal chats={chats} setChats={setChats} />
-        {chats.map((chat) => (
-          <div onClick={() => dispatch(addSelectedChat(chat))} className={`d-flex align-items-center justify-content-between rounded p-2  my-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
+
+        {chats && chats.map((chat) => (
+          <div onClick={() => dispatch(addSelectedChat(chat))} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
             <div className='d-flex align-items-center'>
-              <img src={!chat.isGroupChat ? getSenderPicture(user, chat.users) ? getSenderPicture(user, chat.users) : '/assets/default-user.jpg' : "/assets/default-users.png"} className='rounded-circle me-2' style={{ width: "40px" }} alt="" />
+                 <img src={!chat.isGroupChat ? getSenderDetails(user, chat.users).profilePicture ? getSenderDetails(user, chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"} className='rounded-circle me-2' style={{ width: "40px" }} alt="" />
               <div>
-                <span className='m-0 d-block' style={{ lineHeight: "8px", paddingTop: "5px" }}>
-                  {!chat.isGroupChat ? getSender(user, chat.users) : chat.chatName}
+                <span className='m-0 d-block capitalize' style={{ lineHeight: "8px", paddingTop: "5px" }}>
+                  {!chat.isGroupChat ? getSenderDetails(user, chat.users).username : chat.chatName}
                 </span>
                 {!chat.isGroupChat && (
-                  <small>{getSenderEmail(user, chat.users)}</small>
+                  <small>{getSenderDetails(user, chat.users).email}</small>
                 )}
               </div>
             </div>

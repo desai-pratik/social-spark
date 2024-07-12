@@ -1,7 +1,6 @@
 import React from 'react'
 import Topbar from '../../components/topbar/Topbar'
 import Sidebar from '../../components/sidebar/Sidebar'
-import "./home.css"
 import Feedback from '../../components/feedback/Feedback'
 import Rightbar from '../../components/rightbar/Rightbar'
 import { useSelector } from 'react-redux'

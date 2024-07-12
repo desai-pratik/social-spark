@@ -4,6 +4,7 @@ import ViewPost from '../view-post/ViewPost'
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { tostConfig } from '../../config/interface';
 
 
 const Feedback = ({ username }) => {
@@ -21,15 +22,7 @@ const Feedback = ({ username }) => {
             }
             fetchPosts();
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
     }, []);
 

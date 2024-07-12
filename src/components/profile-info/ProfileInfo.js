@@ -6,6 +6,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from 'react-redux';
 import { editUser } from "../../context/authSlice";
 import { toast } from "react-toastify";
+import { tostConfig } from "../../config/interface";
 
 
 const ProfileInfo = ({ user }) => {
@@ -35,15 +36,7 @@ const ProfileInfo = ({ user }) => {
       // setProfilePicUrl(userImgURL);
 
     } catch (error) {
-      toast.error(`${error}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-    });
+      toast.error(`${error}`, tostConfig);
     }
   };
 
@@ -64,15 +57,7 @@ const ProfileInfo = ({ user }) => {
       dispatch(editUser(res.data));
       // setCoverPicUrl(coverImgURL);
     } catch (error) {
-      toast.error(`${error}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-    });
+      toast.error(`${error}`, tostConfig);
       
     }
   };
@@ -97,7 +82,7 @@ const ProfileInfo = ({ user }) => {
         </label>}
       </div>
 
-      <h3 className="text-center m-0">{user.username}</h3>
+      <h3 className="text-center m-0 capitalize">{user.username}</h3>
       <h6 className="text-center text-secondary">{user.desc}</h6>
     </div>
   );

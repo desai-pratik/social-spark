@@ -15,7 +15,7 @@ const Topbar = () => {
     <nav className="navbar navbar-expand-lg topbar py-1 position-sticky z-3">
       <div className="container-fluid">
         <div>
-          <span className="navbar-toggler-icon me-3 text-white cursor-pointer" onClick={() => dispatch(toggleSidebar())}></span>
+          <span className="navbar-toggler-icon me-3 cursor-pointer" style={{color: "white"}} onClick={() => dispatch(toggleSidebar())}></span>
           <Link className="navbar-brand" to="/">
             <img src="/assets/logo-dark-bg-remove.png" className="logo object-fit-cover" alt="logo" />
           </Link>

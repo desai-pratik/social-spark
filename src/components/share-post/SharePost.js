@@ -5,43 +5,40 @@ import { storage } from "../../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { useSelector } from 'react-redux';
 import { toast } from "react-toastify";
+import { tostConfig } from "../../config/interface";
+import { Button } from "@mui/material";
+import { getPost } from "../../apiCalls";
+import { LoadingButton } from "@mui/lab";
 
 
 const SharePost = () => {
   const user = useSelector(state => state.auth.user);
   const desc = useRef();
   const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handelSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       let downloadURL = "";
       if (file) {
         const storageRef = ref(storage, file.name);
         await uploadBytes(storageRef, file);
         downloadURL = await getDownloadURL(storageRef);
       }
-
       const newPost = {
         userId: user._id,
         desc: desc.current.value,
         img: downloadURL,
       };
-
       await axios.post(`${process.env.REACT_APP_API_BASE_URL}/posts`, newPost);
-
       desc.current.value = "";
       setFile(null);
+      getPost(user);
+      setLoading(false);
     } catch (error) {
-      toast.error(`${error}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-      });
+      toast.error(`${error}`, tostConfig);
     }
   };
 
@@ -63,9 +60,9 @@ const SharePost = () => {
           ></i>
         </div>
       )}
-      <div className="d-flex justify-content-between">
+      <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex gap-3">
-          <label htmlFor="file" className="data-type d-flex">
+          <label htmlFor="file" className="data-type d-flex cursor-pointer">
             <i className="me-1 bi bi-image" style={{ color: "red" }}></i>
             {file?.name ? file?.name : " Photo or Video"}
             <input type="file" id="file" style={{ display: "none " }} accept=".png,.jpeg,.jpg," onChange={(e) => setFile(e.target.files[0])} />
@@ -83,9 +80,13 @@ const SharePost = () => {
             Feelings
           </div>
         </div>
-        <button className="custome-btn" type="submit">
+        {/* <button className="custome-btn" type="submit">
           Share
-        </button>
+        </button> */}
+
+          <LoadingButton variant="contained" color="primary" loading={loading} type="submit" size="small">
+            Share
+          </LoadingButton>
       </div>
     </form>
   );

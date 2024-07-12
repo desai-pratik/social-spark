@@ -8,6 +8,8 @@ import { addUser } from '../../context/authSlice';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { toast } from 'react-toastify';
+import { tostConfig } from '../../config/interface';
+import { LoadingButton } from '@mui/lab';
 
 
 const Login = () => {
@@ -33,27 +35,11 @@ const Login = () => {
                 dispatch(addUser(res.data));
                 setLoading(false);
             } catch (error) {
-                toast.error(`${error}`, {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                });
+                toast.error(`${error}`, tostConfig);
                 console.error('Error during login:', error);
             }
         }
     });
-
-
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/auth/login`, { email: email.current.value, password: password.current.value });
-
-    //    dispatch(addUser(res.data));
-    // }
 
     const handleGoogleSignIn = async () => {
         try {
@@ -68,15 +54,7 @@ const Login = () => {
             dispatch(addUser(res.data));
             setLoading(false);
         } catch (error) {
-            toast.error(`${error}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                draggable: true,
-                progress: undefined,
-                theme: "light",
-            });
+            toast.error(`${error}`, tostConfig);
         }
     };
 
@@ -117,7 +95,12 @@ const Login = () => {
                                 <div className="invalid-feedback">{formik.errors.password}</div>
                             ) : null}
 
-                            <button type='submit' className='login-btn mt-3'>{loading ? 'Loading...' : 'Log In'}</button>
+                            {/* <button type='submit' className='login-btn mt-3'>{loading ? 'Loading...' : 'Log In'}</button> */}
+
+                            <LoadingButton type='submit' variant="contained" className='login-btn mt-3' loading={loading}>
+                                <span>Login</span>
+                            </LoadingButton>
+
                             <button type='button' className='google-login mt-2' onClick={handleGoogleSignIn}>
                                 <img src="/assets/google-logo.png" className='me-2' width={"30px"} alt="google" /> {loading ? 'Loading...' : ' LogIn with Google'}
                             </button>
