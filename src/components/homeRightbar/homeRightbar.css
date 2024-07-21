@@ -1,0 +1,16 @@
+.rigthbar {
+    height: calc(100vh - 60px);
+    top: 60px;
+}
+
+.rigthbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.rigthbar::-webkit-scrollbar-track {
+    background-color: #ebebeb;
+}
+
+.rigthbar::-webkit-scrollbar-thumb {
+    background-color: #888888;
+}

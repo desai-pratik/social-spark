@@ -65,7 +65,7 @@ const ProfileInfo = ({ user }) => {
   return (
     <div className="profile-info">
       <div className="position-relative">
-        <img src={user.coverPicture ? user.coverPicture : "/assets/banner-3.PNG"} className="w-100 profile-banner" alt="profile banner" />
+        <img src={user.coverPicture ? user.coverPicture : "/assets/banner-3.PNG"} className="w-100 profile-banner" alt="profile banner" title="profile banner" />
 
         {currentUser._id === user._id && <label htmlFor="cover-file" className="position-absolute edit-background end-0 top-0 d-flex">
           <i className="bi bi-pencil-square me-2"></i> Edit Image
@@ -74,7 +74,7 @@ const ProfileInfo = ({ user }) => {
       </div>
 
       <div className="position-relative profile-user-info">
-        <img className="user " src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} alt="user" />
+        <img className="user" src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} alt="user" title={user.username}/>
 
         {currentUser._id === user._id && <label htmlFor="user-file" className="data-type d-flex">
           <i className="bi bi-pencil-square edit-icon"></i>

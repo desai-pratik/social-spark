@@ -10,18 +10,15 @@ import { Button } from "@mui/material";
 import Picker from 'emoji-picker-react';
 
 
-const ViewPost = ({ post }) => {
+const ViewPost = ({ post , onDeletePost }) => {
   const [postUser, setPostUser] = useState({});
   const [like, setLike] = useState(post.likes.length);
-  const [islike, setIslike] = useState(false);
   const user = useSelector(state => state.auth.user);
   const toastRef = useRef(null);
   const [showPicker, setShowPicker] = useState(false);
   const [postReaction, setPostReaction] = useState();
-
-  useEffect(() => {
-    setIslike(post.likes.includes(user._id))
-  }, [post.likes, user._id]);
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     try {
@@ -35,20 +32,54 @@ const ViewPost = ({ post }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            if (videoRef.current) {
+              videoRef.current.play()
+                .then(() => {
+                  setIsPlaying(true);
+                })
+                .catch((error) => {
+                  toast.error(`${error}`, tostConfig);
+                });
+            }
+          } else {
+            if (videoRef.current && isPlaying) {
+              videoRef.current.pause();
+              setIsPlaying(false);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.5
+      }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, [isPlaying]);
+
   const hendallike = async (id) => {
     try {
       const res = await axios.put(`${process.env.REACT_APP_API_BASE_URL}/posts/${id}/like`, {
         userId: user._id,
       });
       if (res.data === "The post has been liked.") {
-        console.log("post is like");
         setLike(like + 1);
-        setIslike(true);
         setPostReaction("❤️");
       } else if (res.data === "The post has been disliked.") {
-        console.log("post is dislike");
         setLike(like - 1);
-        setIslike(false);
         setPostReaction("❤️");
       }
       setTimeout(() => {
@@ -77,6 +108,7 @@ const ViewPost = ({ post }) => {
         }
       };
       await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/posts/${postId}`, config);
+      onDeletePost(postId);
       const toast = new window.bootstrap.Toast(toastRef.current, {
         autohide: false
       });
@@ -85,10 +117,9 @@ const ViewPost = ({ post }) => {
     } catch (error) {
       toast.error(`${error.response.data}`, tostConfig);
     }
-  }
+  };
 
   const handleReaction = async (emojiObject, postId) => {
-    console.log(emojiObject);
     setPostReaction(emojiObject.emoji)
     setShowPicker(false);
 
@@ -101,14 +132,13 @@ const ViewPost = ({ post }) => {
     }
   };
 
-
   return (
     <>
       <div className="p-3 my-3 shadow-sm border border-light-subtle">
         <div className="post-header d-flex justify-content-between">
           <div className="user-img d-flex align-items-center gap-2 me-2">
             <Link className="navbar-brand" to={"/profile/" + postUser.username}>
-              <img src={postUser.profilePicture ? postUser.profilePicture : "/assets/default-user.jpg"} alt={postUser.username} className="object-fit-cover" />
+              <img src={postUser.profilePicture ? postUser.profilePicture : "/assets/default-user.jpg"} className="object-fit-cover" alt={postUser.username} title={postUser.username} />
             </Link>
             <Link className="navbar-brand" to={"/profile/" + postUser.username}>
               <h5 className="m-0 capitalize">{postUser.username}</h5>
@@ -135,23 +165,25 @@ const ViewPost = ({ post }) => {
         <div className="post-sms my-3">
           <p>{post.desc}</p>
         </div>
+
         {post.img && (
-          <div className="post-img position-relative" onDoubleClick={() => hendallike(post._id)}>
-          <img className="img-fluid post-img d-flex mx-auto" src={post.img} alt="post images" />
-          <span className="fs-1 position-absolute bottom-50 end-50">{postReaction}</span>
-        </div>
+          <div className="post-img position-relative">
+            {post.img.includes('.mp4') ? (
+              <video ref={videoRef} controls muted className="img-fluid post-img d-flex mx-auto">
+                <source src={post.img} type="video/mp4" />
+              </video>
+            ) : (
+              <img src={post.img} className="img-fluid post-img d-flex mx-auto" onDoubleClick={() => hendallike(post._id)} alt="post" title="post"/>
+            )}
+            <span className="fs-1 position-absolute top-50 start-50 translate-middle">{postReaction}</span>
+          </div>
         )}
+
+
         <div className="post-review d-flex justify-content-between align-items-center mt-2">
           <div className="d-flex align-items-center gap-2">
-            {/* {islike ? (
-              <i className="bi bi-heart-fill text-danger m-1" onClick={() => hendallike(post._id)}></i>
-            ) : (
-              <i className="bi bi-heart-fill hart" onClick={() => hendallike(post._id)}></i>
-            )} */}
-
             <span className="cursor-pointer d-flex" onClick={() => setShowPicker(!showPicker)}>
-              <i className="bi bi-heart-fill text-danger fs-5" style={{ width: "8px" }}></i>
-              <i className="bi bi-hand-thumbs-up-fill text-warning fs-5" style={{ width: "15px" }}></i>
+              <i className="bi bi-heart-fill text-danger fs-5"></i>
             </span>
 
             {showPicker && (
@@ -161,7 +193,7 @@ const ViewPost = ({ post }) => {
             )}
 
             {postReaction && (<span>{postReaction}</span>)}
-            <span className="p-0 text-secondary badge">{like} people like it</span>
+            <span className="p-0 text-secondary badge">{like} likes</span>
           </div>
           <span className="p-0 text-secondary badge">9 Comments</span>
         </div>

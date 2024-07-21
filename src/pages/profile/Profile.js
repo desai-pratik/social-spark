@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Topbar from '../../components/topbar/Topbar'
-import Sidebar from '../../components/sidebar/Sidebar'
 import Feedback from '../../components/feedback/Feedback'
-import Rightbar from '../../components/rightbar/Rightbar'
+// import Rightbar from '../../components/rightbar/Rightbar'
 import ProfileInfo from '../../components/profile-info/ProfileInfo'
 import axios from 'axios'
 import { useParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { tostConfig } from '../../config/interface'
 import { useSelector } from 'react-redux'
+import HomeSidebar from '../../components/home-sidebar/HomeSidebar'
+import ProfileRightbar from '../../components/profileRightbar/ProfileRightbar'
 
 const Profile = () => {
     const [user, setUser] = useState({});
@@ -33,7 +34,7 @@ const Profile = () => {
             <div className="container-fluid">
                 <div className="row">
                     <div className='p-0' style={isSidebar ? { width: "270px" } : { display: "none" }}>
-                        <Sidebar />
+                        <HomeSidebar />
                     </div>
                     <div className="col p-0">
                         <ProfileInfo user={user} />
@@ -44,7 +45,7 @@ const Profile = () => {
                                     <Feedback username={params.username} />
                                 </div>
                                 <div className="col-3 p-0">
-                                    <Rightbar user={user} />
+                                    <ProfileRightbar user={user} />
                                 </div>
                             </div>
                         </div>

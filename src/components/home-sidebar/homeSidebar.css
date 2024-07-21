@@ -1,0 +1,6 @@
+.sidebar-container {
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    position: sticky;
+    top: 60px;
+}

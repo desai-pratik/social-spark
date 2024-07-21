@@ -128,7 +128,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
 
                             {searchResults?.slice(0, 4).map(user => (
                                 <div onClick={() => handleGroup(user)} className='d-flex align-items-center rounded p-2 bg-info-subtle cursor-pointer my-2'>
-                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px" }} alt="" />
+                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px" }} alt={user.username} title={user.username} />
                                     <div>
                                         <span className='m-0 d-block' style={{ lineHeight: "8px", paddingTop: "5px" }}>{user.username}</span>
                                         <small>{user.email}</small>

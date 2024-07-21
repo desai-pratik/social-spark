@@ -7,24 +7,8 @@ export const getSenderDetails = (loggedUser, users) => {
     email: sender.email,
     profilePicture: sender.profilePicture,
     followers: sender.followers,
-    // Add more properties as needed
   };
 };
-
-// export const getSender = (loggedUser, users) => {
-//   if (users.length < 2) return "";
-//   return users[0]._id === loggedUser._id ? users[1].username : users[0].username;
-// }
-
-// export const getSenderEmail = (loggedUser, users) => {
-//   if (users.length < 2) return "";
-//   return users[0]._id === loggedUser._id ? users[1].email : users[0].email;
-// }
-
-// export const getSenderPicture = (loggedUser, users) => {
-//   if (users.length < 2) return "";
-//   return users[0]._id === loggedUser._id ? users[1].profilePicture : users[0].profilePicture;
-// }
 
 export const isSameSender = (messages, m, i, userId) => {
   return (
@@ -33,7 +17,7 @@ export const isSameSender = (messages, m, i, userId) => {
       messages[i + 1].sender._id === undefined) &&
     messages[i].sender._id !== userId
   );
-}
+};
 
 export const isLastMessage = (messages, i, userId) => {
   return (
@@ -59,8 +43,8 @@ export const isSameSenderMargin = (messages, m, i, userId) => {
   } else {
     return "auto";
   }
-}
+};
 
 export const isSameUser = (messages, m, i) => {
   return i > 0 && messages[i - 1].sender._id === m.sender._id;
-}
+};

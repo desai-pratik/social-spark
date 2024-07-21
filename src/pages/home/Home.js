@@ -1,9 +1,10 @@
 import React from 'react'
 import Topbar from '../../components/topbar/Topbar'
-import Sidebar from '../../components/sidebar/Sidebar'
 import Feedback from '../../components/feedback/Feedback'
-import Rightbar from '../../components/rightbar/Rightbar'
+// import Rightbar from '../../components/rightbar/Rightbar'
 import { useSelector } from 'react-redux'
+import HomeSidebar from '../../components/home-sidebar/HomeSidebar'
+import HomeRightbar from '../../components/homeRightbar/HomeRightbar'
 
 const Home = () => {
     const isSidebar = useSelector(state => state.sidebar.isSidebarOpen);
@@ -13,13 +14,13 @@ const Home = () => {
             <div className="container-fluid">
                 <div className="row">
                     <div className='p-0' style={isSidebar ? { width: "270px" } : {display:"none"}}>
-                        <Sidebar />
+                        <HomeSidebar />
                     </div>
                     <div className="col p-0">
                         <Feedback />
                     </div>
                     <div className="col-3 p-0">
-                        <Rightbar />
+                        <HomeRightbar />
                     </div>
                 </div>
             </div>

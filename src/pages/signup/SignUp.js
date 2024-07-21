@@ -66,7 +66,7 @@ const SignUp = () => {
             <div className="container ">
                 <div className="row vh-100">
                     <div className="col-md-6 flex-column d-flex justify-content-center align-items-center">
-                        <img src="/assets/logo-light-bg-remove.PNG" className="w-50" alt="logo" />
+                        <img src="/assets/logo-light-bg-remove.PNG" className="w-50" alt="logo" title="SocialSpark"/>
                         <h4 className="mt-3 w-75 ms-auto">Connect with friends and the world around you on SocialSpark.</h4>
                     </div>
                     <div className="col-md-6 flex-column d-flex justify-content-center ">
@@ -105,14 +105,6 @@ const SignUp = () => {
                             ) : null}
 
                             <div className="position-relative">
-                                {/* <input
-                                    type={passwordShown ? "text" : "password"}
-                                    className="w-100 p-2 fs-6 rounded border-1 my-2 "
-                                    placeholder="Confirm password"
-                                    ref={confirm_password}
-                                    required
-                                    minLength={6}
-                                /> */}
                                 <input
                                     type={passwordShown ? "text" : "password"}
                                     className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.confirm_password && formik.errors.confirm_password ? 'is-invalid' : ''}`}
@@ -127,12 +119,11 @@ const SignUp = () => {
                             {formik.touched.confirm_password && formik.errors.confirm_password ? (
                                 <div className="invalid-feedback">{formik.errors.confirm_password}</div>
                             ) : null}
-{/*  <button type="submit" className="sign-up-btn mt-2"> {loading ? 'Loading...' : 'SignUp'}</button> */}
-                          <LoadingButton type='submit' variant="contained" className='sign-up-btn mt-3' loading={loading}>
+                            <LoadingButton type='submit' variant="contained" className='sign-up-btn mt-3' loading={loading}>
                                 <span>SignUp</span>
                             </LoadingButton>
                             <button type="button" className="google-login mt-3" onClick={handleGoogleSignIn}>
-                                <img src="/assets/google-logo.png" className='me-2' width={"30px"} alt="google" />{loading ? 'Loading...' : 'SignUp with Google'}
+                                <img src="/assets/google-logo.png" className='me-2' width={"30px"} alt="google" title="Google" />{loading ? 'Loading...' : 'SignUp with Google'}
                             </button>
                             <Link to="/login" type="button" className="create-ac-btn mt-3">
                                 Login into Account

@@ -49,11 +49,9 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
       };
       const res = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/messages/${selectedChat?._id}`, config);
       setMessages(res.data);
-
       socket.emit('join chat', selectedChat._id);
     } catch (error) {
       toast.error(`${error}`, tostConfig);
-      console.log(error);
     }
   }
 
@@ -81,7 +79,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
         setMessages([...messages, newMessageReceived])
       }
     })
-  })
+  }, [notification, messages, selectedChatCompare]);
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessages) {
@@ -164,7 +162,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
             {!selectedChat.isGroupChat ? (
               <div className='d-flex align-items-center justify-content-between pb-2'>
                 <Link to={"/profile/" + senderDetails.username} className='d-flex align-items-center text-decoration-none text-dark'>
-                  <img className='rounded-circle' style={{ width: "40px" }} src={senderDetails.profilePicture || "/assets/default-user.jpg"} alt={selectedChat.chatName} />
+                  <img className='rounded-circle' style={{ width: "40px" }} src={senderDetails.profilePicture || "/assets/default-user.jpg"} title={senderDetails.username} alt={senderDetails.username} />
                   <h5 className='m-0 ms-2 capitalize'>{senderDetails.username}</h5>
                 </Link>
                 <i className="bi bi-three-dots-vertical p-2 cursor-pointer"></i>
@@ -172,7 +170,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
             ) : (
               <div className='d-flex align-items-center justify-content-between'>
                 <div className='d-flex align-items-center'>
-                  <img style={{ width: "40px" }} className='rounded-circle' src={"/assets/default-users.png"} alt={selectedChat.chatName} />
+                  <img style={{ width: "40px" }} className='rounded-circle' src={"/assets/default-users.png"} title={selectedChat.chatName} alt={selectedChat.chatName} />
                   <h5 className='m-0 ms-2 capitalize'>{selectedChat.chatName}</h5>
                 </div>
                 <i className="bi bi-three-dots-vertical p-2 cursor-pointer" data-bs-toggle="modal" data-bs-target="#updateGroupChat"></i>

@@ -1,23 +1,41 @@
-import React from "react";
+import React, { useRef } from "react";
 import "./topbar.css";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from "../../context/sidebarSlice";
+import { getSenderDetails } from "../../chatLogic";
+import { addNotification, addSelectedChat } from "../../context/chatSlice";
 
 const Topbar = () => {
 
   const user = useSelector(state => state.auth.user);
   const chatNotification = useSelector(state => state.chat.notification);
   const dispatch = useDispatch();
+  const toastRef = useRef(null);
 
+  const showToast = () => {
+    const toast = new window.bootstrap.Toast(toastRef.current, {
+      autohide: false
+    });
+    if (toastRef.current) {
+      toast.show();
+    } else {
+      toast.hide();
+    }
+  };
+
+  const handelNotification = (chatObj) => {
+    dispatch(addSelectedChat(chatObj.chat))
+    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
+  }
 
   return (
     <nav className="navbar navbar-expand-lg topbar py-1 position-sticky z-3">
       <div className="container-fluid">
         <div>
-          <span className="navbar-toggler-icon me-3 cursor-pointer" style={{color: "white"}} onClick={() => dispatch(toggleSidebar())}></span>
+          <span className="me-3 cursor-pointer fs-4" style={{ color: "white" }} onClick={() => dispatch(toggleSidebar())}>&#9776;</span>
           <Link className="navbar-brand" to="/">
-            <img src="/assets/logo-dark-bg-remove.png" className="logo object-fit-cover" alt="logo" />
+            <img src="/assets/logo-dark-bg-remove.png" className="logo object-fit-cover" alt="logo" title="SocialSpark" />
           </Link>
         </div>
         <button
@@ -39,39 +57,45 @@ const Topbar = () => {
             </form>
           </div>
           <div className="ms-auto d-flex align-items-center">
-            {/* <ul className="navbar-nav  mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <a className="nav-link text-white" href="#">Home</a>
-                            </li>
-                            <li className="nav-item">
-                                <a className="nav-link text-white" href="#">Timeline</a>
-                            </li>
-                        </ul> */}
-            <div className="icons d-flex gap-4 text-white mx-4">
-              <div className=" position-relative notification">
-                <i className="bi bi-person-fill fs-5"></i>
-                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                  1<span className="visually-hidden">unread messages</span>
-                </span>
-              </div>
-              <Link to="/chats" className="position-relative notification text-white">
+            <div className="icons d-flex gap-4 text-white mx-2">
+              <div className="position-relative notification text-white" onClick={showToast}>
                 <i className="bi bi-chat-left-dots-fill fs-5"></i>
-                {chatNotification.length > 0 &&(
+                {chatNotification.length > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     {chatNotification.length}
                   </span>
                 )}
-              </Link>
-              <div className="notification">
-                <i className="bi bi-gear-fill fs-5"></i>
-                {/* <span className="notification-pill">1</span> */}
               </div>
-            </div>
-            <div className="user-image">
-              <Link to={"/profile/" + user?.username}>
-                <img src={user?.profilePicture ? user?.profilePicture : "/assets/default-user.jpg"} className="object-fit-cover" alt={user?.username} />
+              <div className="toast-container bg-white" style={{ width: "250px", marginLeft: "-150px", marginTop: "45px" }}>
+                <div id={`liveToast`} className="toast" role="alert" aria-live="assertive" aria-atomic="true" ref={toastRef}>
+                  <div className="toast-header">
+                    <strong className="me-auto capitalize">Chat Notification</strong>
+                    <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div className="toast-body text-black">
+                    {chatNotification.map((chatNotify) => (
+                      <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify._id} onClick={() => handelNotification(chatNotify)}>
+                        <img src={!chatNotify.chat.isGroupChat ? getSenderDetails(user, chatNotify.chat.users).profilePicture ? getSenderDetails(user, chatNotify.chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
+                          className='rounded-circle me-2'
+                          style={{ width: "40px" }}
+                          alt={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}
+                          title={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username} />
+                        <div>
+                          <span className='m-0 d-block'>{chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}</span>
+                          <small></small>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <Link to="/setting" className="notification text-white">
+                <i className="bi bi-gear-fill fs-5"></i>
               </Link>
             </div>
+            <Link to={"/profile/" + user?.username} className="user-image">
+              <img src={user?.profilePicture ? user?.profilePicture : "/assets/default-user.jpg"} className="object-fit-cover" alt={user?.username} title={user?.username} />
+            </Link>
           </div>
         </div>
       </div>

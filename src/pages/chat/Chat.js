@@ -1,29 +1,32 @@
 import React, { useState } from 'react'
 import Topbar from '../../components/topbar/Topbar'
-import Sidebar from '../../components/sidebar/Sidebar'
 import ChatBox from '../../components/chatBox/ChatBox'
-import Rightbar from '../../components/rightbar/Rightbar'
 import { useSelector } from 'react-redux'
-import Loading from '../../components/loading/Loading'
+import ChatSidebar from '../../components/chat-sidebar/ChatSidebar'
+import ChatRightbar from '../../components/chatRightbar/ChatRightbar'
+
 
 const Chat = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
-  const loading = useSelector(state => state.loading.loading);
+  const selectedChat = useSelector(state => state.chat.selectedChat);
 
-  return loading ? <Loading /> : (
+
+  return (
     <div>
       <Topbar />
       <div className="container-fluid">
         <div className="row">
           <div className='p-0' style={{ width: "270px" }}>
-            <Sidebar Chat fetchAgain={fetchAgain} />
+            <ChatSidebar/>
           </div>
           <div className="col">
             <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
           </div>
-          <div className="col-3 p-0">
-          <Rightbar chat/>
-          </div>
+          {selectedChat &&
+            <div className="col-3 p-0">
+              <ChatRightbar />
+            </div>
+          }
         </div>
       </div>
     </div>
