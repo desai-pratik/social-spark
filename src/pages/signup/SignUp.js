@@ -66,12 +66,11 @@ const SignUp = () => {
             <div className="container ">
                 <div className="row vh-100">
                     <div className="col-md-6 flex-column d-flex justify-content-center align-items-center">
-                        <img src="/assets/logo-light-bg-remove.PNG" className="w-50" alt="logo" title="SocialSpark"/>
+                        <img src="/assets/logo-light-bg-remove.PNG" className="w-50" alt="logo" title="SocialSpark" />
                         <h4 className="mt-3 w-75 ms-auto">Connect with friends and the world around you on SocialSpark.</h4>
                     </div>
                     <div className="col-md-6 flex-column d-flex justify-content-center ">
                         <form action="" className="bg-white p-5 rounded me-5" onSubmit={formik.handleSubmit}>
-                            {/* <input type="text" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="username" ref={username} required /> */}
                             <input
                                 type="text"
                                 className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.username && formik.errors.username ? 'is-invalid' : ''}`}
@@ -81,8 +80,6 @@ const SignUp = () => {
                             {formik.touched.username && formik.errors.username ? (
                                 <div className="invalid-feedback">{formik.errors.username}</div>
                             ) : null}
-
-                            {/* <input type="email" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="Email" ref={email} required /> */}
                             <input
                                 type="email"
                                 className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.email && formik.errors.email ? 'is-invalid' : ''}`}
@@ -92,8 +89,6 @@ const SignUp = () => {
                             {formik.touched.email && formik.errors.email ? (
                                 <div className="invalid-feedback">{formik.errors.email}</div>
                             ) : null}
-
-                            {/* <input type="password" className="w-100 p-2 fs-6 rounded border-1 my-2 " placeholder="Password" ref={password} required minLength={6} /> */}
                             <input
                                 type="password"
                                 className={`w-100 p-2 fs-6 rounded border-1 my-2 ${formik.touched.password && formik.errors.password ? 'is-invalid' : ''}`}
@@ -103,7 +98,6 @@ const SignUp = () => {
                             {formik.touched.password && formik.errors.password ? (
                                 <div className="invalid-feedback">{formik.errors.password}</div>
                             ) : null}
-
                             <div className="position-relative">
                                 <input
                                     type={passwordShown ? "text" : "password"}

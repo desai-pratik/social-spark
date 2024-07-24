@@ -38,7 +38,6 @@ const Profile = () => {
                     </div>
                     <div className="col p-0">
                         <ProfileInfo user={user} />
-
                         <div className="container-fluid">
                             <div className="row">
                                 <div className="col p-0">

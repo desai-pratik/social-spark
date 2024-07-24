@@ -10,7 +10,6 @@ const Chat = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
   const selectedChat = useSelector(state => state.chat.selectedChat);
 
-
   return (
     <div>
       <Topbar />

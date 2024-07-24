@@ -15,7 +15,6 @@ const ProfileRightbar = ({user}) => {
     const currentUser = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
-    
 
     useEffect(() => {
       const getFriends = async () => {

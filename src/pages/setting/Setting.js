@@ -17,7 +17,6 @@ const Setting = () => {
     const [loading, setLoading] = useState(false);
     const dispatch = useDispatch();
 
-
     const handelLogout = () => {
         try {
             localStorage.removeItem("user");
@@ -25,7 +24,7 @@ const Setting = () => {
         } catch (error) {
             toast.error(`${error}`, tostConfig);
         }
-    }
+    };
 
     return (
         <div>
@@ -37,11 +36,9 @@ const Setting = () => {
                     </div>
                     <div className="col p-2">
                         <h5>Setting</h5>
-
                         <LoadingButton variant="contained" endIcon={<Logout />} onClick={handelLogout} className='' loading={loading}>
                             <span>Logout</span>
                         </LoadingButton>
-
                     </div>
                     <div className="col-3 p-0">
                         <HomeRightbar />

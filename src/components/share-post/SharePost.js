@@ -9,7 +9,7 @@ import { tostConfig } from "../../config/interface";
 import { LoadingButton } from "@mui/lab";
 
 
-const SharePost = ({posts, setPosts}) => {
+const SharePost = ({ posts, setPosts }) => {
   const user = useSelector(state => state.auth.user);
   const desc = useRef();
   const [file, setFile] = useState(null);
@@ -66,9 +66,6 @@ const SharePost = ({posts, setPosts}) => {
           ></i>
         </div>
       )}
-
-
-
       <div className="d-flex justify-content-between align-items-center">
         <div className="d-flex gap-3">
 
@@ -91,13 +88,9 @@ const SharePost = ({posts, setPosts}) => {
             Feelings
           </div>
         </div>
-        {/* <button className="custome-btn" type="submit">
+        <LoadingButton variant="contained" color="primary" loading={loading} type="submit" size="small">
           Share
-        </button> */}
-
-          <LoadingButton variant="contained" color="primary" loading={loading} type="submit" size="small">
-            Share
-          </LoadingButton>
+        </LoadingButton>
       </div>
     </form>
   );

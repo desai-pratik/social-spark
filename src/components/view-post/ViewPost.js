@@ -165,7 +165,6 @@ const ViewPost = ({ post , onDeletePost }) => {
         <div className="post-sms my-3">
           <p>{post.desc}</p>
         </div>
-
         {post.img && (
           <div className="post-img position-relative">
             {post.img.includes('.mp4') ? (
@@ -178,20 +177,16 @@ const ViewPost = ({ post , onDeletePost }) => {
             <span className="fs-1 position-absolute top-50 start-50 translate-middle">{postReaction}</span>
           </div>
         )}
-
-
         <div className="post-review d-flex justify-content-between align-items-center mt-2">
           <div className="d-flex align-items-center gap-2">
             <span className="cursor-pointer d-flex" onClick={() => setShowPicker(!showPicker)}>
               <i className="bi bi-heart-fill text-danger fs-5"></i>
             </span>
-
             {showPicker && (
               <div>
                 <Picker reactionsDefaultOpen={true} onEmojiClick={(e) => handleReaction(e, post._id)} />
               </div>
             )}
-
             {postReaction && (<span>{postReaction}</span>)}
             <span className="p-0 text-secondary badge">{like} likes</span>
           </div>

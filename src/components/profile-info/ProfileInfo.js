@@ -11,9 +11,6 @@ import { tostConfig } from "../../config/interface";
 
 const ProfileInfo = ({ user }) => {
 
-  // const [profilePicUrl, setProfilePicUrl] = useState(user.profilePicture);
-  // const [coverPicUrl, setCoverPicUrl] = useState(user.coverPicture);
-
   const currentUser = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
 
@@ -58,7 +55,7 @@ const ProfileInfo = ({ user }) => {
       // setCoverPicUrl(coverImgURL);
     } catch (error) {
       toast.error(`${error}`, tostConfig);
-      
+
     }
   };
 
@@ -74,7 +71,7 @@ const ProfileInfo = ({ user }) => {
       </div>
 
       <div className="position-relative profile-user-info">
-        <img className="user" src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} alt="user" title={user.username}/>
+        <img className="user" src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} alt="user" title={user.username} />
 
         {currentUser._id === user._id && <label htmlFor="user-file" className="data-type d-flex">
           <i className="bi bi-pencil-square edit-icon"></i>

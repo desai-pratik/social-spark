@@ -51,13 +51,13 @@ const ChatRightbar = () => {
             {selectedChat ?
                 selectedChat.isGroupChat ? (
                     <div className='text-center'>
-                        <img src="/assets/default-users.png" className='rounded-circle' style={{ width: "150px" }} title={selectedChat.chatName} alt={selectedChat.chatName}/>
+                        <img src="/assets/default-users.png" className='rounded-circle' style={{ width: "150px", height: "150px" }} title={selectedChat.chatName} alt={selectedChat.chatName} />
                         <h3 className='capitalize'>{selectedChat.chatName}</h3>
                         <p className=''> {selectedChat.users.length} Members</p>
                         {selectedChat.users.map((member) => (
                             <div key={member._id} className="p-2 my-1 mx-3 bg-body-secondary rounded-3">
                                 <Link to={'/profile/' + member.username} key={member._id} className='d-flex align-items-center text-decoration-none'>
-                                    <img src={member.profilePicture || "/assets/default-user.jpg"} className='rounded-circle me-3' style={{ width: "30px" }} alt={member.username} title={member.username} />
+                                    <img src={member.profilePicture || "/assets/default-user.jpg"} className='rounded-circle me-3' style={{ width: "30px", height: "30px" }} alt={member.username} title={member.username} />
                                     <p className='d-block m-0 capitalize'>{member.username}</p>
                                 </Link>
                             </div>
@@ -65,7 +65,7 @@ const ChatRightbar = () => {
                     </div>
                 ) : (
                     <div className='text-center'>
-                        <img src={senderDetails.profilePicture || "/assets/default-user.jpg"} className='rounded-circle' style={{ width: "150px" }}  alt={senderDetails.username} title={senderDetails.username}/>
+                        <img src={senderDetails.profilePicture || "/assets/default-user.jpg"} className='rounded-circle' style={{ width: "150px", height: "150px" }} alt={senderDetails.username} title={senderDetails.username} />
                         <h3 className='capitalize'>{senderDetails.username}</h3>
                         <h6 className=''>{senderDetails.email}</h6>
                         <LoadingButton variant="contained" color="primary" loading={loading} endIcon={!followed ? <AddCircleOutline /> : <RemoveCircleOutline />} onClick={handleFollow}>

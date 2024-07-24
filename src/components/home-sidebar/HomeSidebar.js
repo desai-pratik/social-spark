@@ -69,5 +69,4 @@ const HomeSidebar = () => {
     )
   }
 
-  
 export default HomeSidebar

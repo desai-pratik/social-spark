@@ -14,7 +14,6 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
     const [searchResults, setSearchResults] = useState([]);
     const dispatch = useDispatch();
 
-
     const removeUser = async (user1) => {
         if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
             toast.error(`Only admins can remove someone!`, tostConfig);
@@ -38,7 +37,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             toast.error(`${error}`, tostConfig);
         }
 
-    }
+    };
 
     const handleRename = async (e) => {
         e.preventDefault();
@@ -61,7 +60,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
             toast.error(`${error}`, tostConfig);
         }
         setRenameGroupChat('');
-    }
+    };
 
     const handleSearch = async (query) => {
         setSearch(query);
@@ -77,7 +76,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
         } catch (error) {
             toast.error(`${error}`, tostConfig);
         }
-    }
+    };
 
     const handleGroup = async (userToAdd) => {
         if (selectedChat.users.some(user => user._id === userToAdd._id)) {
@@ -106,8 +105,7 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
         }
         setSearch('')
         setSearchResults([]);
-    }
-
+    };
 
     return (
         <div className="modal fade" id="updateGroupChat" tabIndex="-1" aria-labelledby="updateGroupChatLabel" aria-hidden="true">
@@ -121,25 +119,21 @@ const UpdateGroupChatModal = ({ fetchMessage, fetchAgain, setFetchAgain }) => {
                         <div className="modal-body">
                             <div className="d-flex gap-2 my-3">
                                 <input type="text" className="form-control" placeholder="Rename Group" value={renameGroupChat} onChange={(e) => setRenameGroupChat(e.target.value)} />
-                                {/* <button className="custom-btn" onClick={(e) => handleRename(e)} data-bs-dismiss="modal">Update</button> */}
                                 <Button variant="contained" onClick={(e) => handleRename(e)} color="primary" data-bs-dismiss="modal" >Update</Button>
                             </div>
                             <input type="text" className="form-control" placeholder="Add Users" value={search} onChange={(e) => handleSearch(e.target.value)} />
-
                             {searchResults?.slice(0, 4).map(user => (
                                 <div onClick={() => handleGroup(user)} className='d-flex align-items-center rounded p-2 bg-info-subtle cursor-pointer my-2'>
-                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px" }} alt={user.username} title={user.username} />
+                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px", height: "40px" }} alt={user.username} title={user.username} />
                                     <div>
                                         <span className='m-0 d-block' style={{ lineHeight: "8px", paddingTop: "5px" }}>{user.username}</span>
                                         <small>{user.email}</small>
                                     </div>
                                 </div>
                             ))}
-
                             {selectedChat.users.map((user) => (
                                 <span key={user._id} className="badge rounded-pill text-bg-info m-2">{user.username} <i className="bi bi-x-lg ms-1 cursor-pointer fw-bolder" data-bs-dismiss="modal" onClick={() => removeUser(user)}></i></span>
                             ))}
-
                         </div>
                     </form>
                 </div>

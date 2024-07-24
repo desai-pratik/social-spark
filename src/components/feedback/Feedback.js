@@ -16,14 +16,14 @@ const Feedback = ({ username }) => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const res = username 
-                ? await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/profile/${username}`) 
-                : await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/timeline/${user._id}`);
+                const res = username
+                    ? await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/profile/${username}`)
+                    : await axios.get(`${process.env.REACT_APP_API_BASE_URL}/posts/timeline/${user._id}`);
 
-                 const sortedPosts = res.data.sort((p1, p2) => {
+                const sortedPosts = res.data.sort((p1, p2) => {
                     return new Date(p2.createdAt) - new Date(p1.createdAt)
                 });
-                
+
                 let filteredPosts;
                 if (location.pathname === "/videos") {
                     filteredPosts = sortedPosts.filter(post => post.img && post.img.includes('.mp4'));
@@ -41,12 +41,13 @@ const Feedback = ({ username }) => {
 
     const handleDeletePost = (postId) => {
         setPosts(posts.filter(post => post._id !== postId));
-      };
+    };
+    
     return (
         <div className='feedback p-3'>
-            {(!username || username === user.username) && <SharePost posts={posts} setPosts={setPosts}/>}
+            {(!username || username === user.username) && <SharePost posts={posts} setPosts={setPosts} />}
             {posts.length === 0 && (<p className="text-center" style={{ marginTop: "150px" }}>No post found! </p>)}
-            {posts.map((post) => <ViewPost key={post._id} post={post} onDeletePost={handleDeletePost}/>)}
+            {posts.map((post) => <ViewPost key={post._id} post={post} onDeletePost={handleDeletePost} />)}
         </div>
     )
 }

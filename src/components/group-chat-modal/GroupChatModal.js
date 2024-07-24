@@ -27,7 +27,7 @@ const GroupChatModal = ({ chats, setChats }) => {
         } catch (error) {
             toast.error(`${error}`, tostConfig);
         }
-    }
+    };
     const handleSubmit = async () => {
         if (!selectedUsers || !groupChatName) {
             toast.error('Please fill all the felids.', tostConfig);
@@ -48,7 +48,7 @@ const GroupChatModal = ({ chats, setChats }) => {
         } catch (error) {
             toast.error(`Failed to create the chat!`, tostConfig);
         }
-    }
+    };
     const handleGroup = (userToAdd) => {
         try {
             if (selectedUsers.some(user => user._id === userToAdd._id)) {
@@ -62,10 +62,10 @@ const GroupChatModal = ({ chats, setChats }) => {
             toast.error(`${error}`, tostConfig);
         }
 
-    }
+    };
     const removeUser = (removeToUser) => {
         setSelectedUsers(selectedUsers.filter((sel) => sel._id !== removeToUser._id))
-    }
+    };
 
     return (
         <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -92,7 +92,7 @@ const GroupChatModal = ({ chats, setChats }) => {
 
                             {searchResults?.slice(0, 4).map(user => (
                                 <div onClick={() => handleGroup(user)} className='d-flex align-items-center rounded p-2 bg-info-subtle cursor-pointer my-2'>
-                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px" }} alt={user.username} title={user.username} />
+                                    <img src={user.profilePicture ? user.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px", height: "40px" }} alt={user.username} title={user.username} />
                                     <div>
                                         <span className='m-0 d-block' style={{ lineHeight: "8px", paddingTop: "5px" }}>{user.username}</span>
                                         <small>{user.email}</small>

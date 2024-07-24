@@ -103,7 +103,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
         toast.error(`${error}`, tostConfig);
       }
     }
-  }
+  };
 
   const clickSendMessage = async (event) => {
     event.preventDefault();
@@ -125,7 +125,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
     } catch (error) {
       toast.error(`${error}`, tostConfig);
     }
-  }
+  };
 
   const typingHandler = (e) => {
     setNewMessages(e.target.value);
@@ -147,12 +147,12 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
-  }
+  };
 
   const handleEmojiClick = (e) => {
     setNewMessages((prev) => prev + e.emoji);
     setOpenEmojiPicker(false);
-  }
+  };
 
   return (
     <>
@@ -162,7 +162,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
             {!selectedChat.isGroupChat ? (
               <div className='d-flex align-items-center justify-content-between pb-2'>
                 <Link to={"/profile/" + senderDetails.username} className='d-flex align-items-center text-decoration-none text-dark'>
-                  <img className='rounded-circle' style={{ width: "40px" }} src={senderDetails.profilePicture || "/assets/default-user.jpg"} title={senderDetails.username} alt={senderDetails.username} />
+                  <img className='rounded-circle' style={{ width: "40px", height: "40px" }} src={senderDetails.profilePicture || "/assets/default-user.jpg"} title={senderDetails.username} alt={senderDetails.username} />
                   <h5 className='m-0 ms-2 capitalize'>{senderDetails.username}</h5>
                 </Link>
                 <i className="bi bi-three-dots-vertical p-2 cursor-pointer"></i>
@@ -170,7 +170,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
             ) : (
               <div className='d-flex align-items-center justify-content-between'>
                 <div className='d-flex align-items-center'>
-                  <img style={{ width: "40px" }} className='rounded-circle' src={"/assets/default-users.png"} title={selectedChat.chatName} alt={selectedChat.chatName} />
+                  <img style={{ width: "40px", height: "40px" }} className='rounded-circle' src={"/assets/default-users.png"} title={selectedChat.chatName} alt={selectedChat.chatName} />
                   <h5 className='m-0 ms-2 capitalize'>{selectedChat.chatName}</h5>
                 </div>
                 <i className="bi bi-three-dots-vertical p-2 cursor-pointer" data-bs-toggle="modal" data-bs-target="#updateGroupChat"></i>
@@ -185,7 +185,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
                 {(
                   isSameSender(messages, m, i, user._id)
                   || isLastMessage(messages, i, user._id)) && (
-                    <img src={m.sender.profilePicture ? m.sender.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-1' style={{ width: "30px" }} title={m.sender.username} alt={m.sender.username} />
+                    <img src={m.sender.profilePicture ? m.sender.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-1' style={{ width: "30px", height: "30px" }} title={m.sender.username} alt={m.sender.username} />
                   )}
                 <span className="py-1 px-3 rounded d-inline-block" style={{ backgroundColor: `${m.sender._id === user._id ? "#B9F5D0" : "#BEE3F8"}`, maxWidth: "75%", marginLeft: isSameSenderMargin(messages, m, i, user._id), marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10 }}> {m.content} </span>
               </div>

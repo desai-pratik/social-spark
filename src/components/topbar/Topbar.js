@@ -7,7 +7,6 @@ import { getSenderDetails } from "../../chatLogic";
 import { addNotification, addSelectedChat } from "../../context/chatSlice";
 
 const Topbar = () => {
-
   const user = useSelector(state => state.auth.user);
   const chatNotification = useSelector(state => state.chat.notification);
   const dispatch = useDispatch();
@@ -27,7 +26,7 @@ const Topbar = () => {
   const handelNotification = (chatObj) => {
     dispatch(addSelectedChat(chatObj.chat))
     dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
-  }
+  };
 
   return (
     <nav className="navbar navbar-expand-lg topbar py-1 position-sticky z-3">
@@ -77,7 +76,7 @@ const Topbar = () => {
                       <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify._id} onClick={() => handelNotification(chatNotify)}>
                         <img src={!chatNotify.chat.isGroupChat ? getSenderDetails(user, chatNotify.chat.users).profilePicture ? getSenderDetails(user, chatNotify.chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
                           className='rounded-circle me-2'
-                          style={{ width: "40px" }}
+                          style={{ width: "40px", height: "40px" }}
                           alt={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}
                           title={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username} />
                         <div>

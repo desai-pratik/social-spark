@@ -126,11 +126,11 @@ const ChatSidebar = () => {
         </form>
         <div className='search-results'>
           {searchResults.map(result => (
-            <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' key={result._id} onClick={() => accessChat(result._id)}>
-              <img src={result.profilePicture ? result.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-2' style={{ width: "40px" }} alt={result.username} title={result.username} />
+            <div className='d-flex align-items-center rounded p-2 gap-2 bg-body-tertiary my-2 cursor-pointer' key={result._id} onClick={() => accessChat(result._id)}>
+              <img src={result.profilePicture ? result.profilePicture : "/assets/default-user.jpg"} className='rounded-circle' style={{ width: "40px", height: "40px" }} alt={result.username} title={result.username} />
               <div>
                 <span className='m-0 d-block' style={{ lineHeight: "8px", paddingTop: "5px" }}>{result.username}</span>
-                <small>{result.email}</small>
+                <small>{result.email.length > 20 ? `${result.email.slice(0, 20)}...` : result.email}</small>
               </div>
             </div>
           ))}
@@ -148,7 +148,7 @@ const ChatSidebar = () => {
             <img
               src={!chat.isGroupChat ? getSenderDetails(user, chat.users).profilePicture ? getSenderDetails(user, chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
               className='rounded-circle me-2'
-              style={{ width: "40px" }}
+              style={{ width: "40px", height: "40px" }}
               alt={chat.isGroupChat ? chat.chatName : getSenderDetails(user, chat.users).username}
               title={chat.isGroupChat ? chat.chatName : getSenderDetails(user, chat.users).username} />
             <div>
@@ -156,7 +156,9 @@ const ChatSidebar = () => {
                 {!chat.isGroupChat ? getSenderDetails(user, chat.users).username : chat.chatName}
               </span>
               {!chat.isGroupChat && (
-                <small>{getSenderDetails(user, chat.users).email}</small>
+                <small>{getSenderDetails(user, chat.users).email.length > 17 
+                  ? `${getSenderDetails(user, chat.users).email.slice(0, 17)}...` 
+                  : getSenderDetails(user, chat.users).email}</small>
               )}
             </div>
           </div>

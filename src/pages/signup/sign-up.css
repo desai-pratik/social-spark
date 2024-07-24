@@ -11,11 +11,12 @@
     color: white;
     border-radius: 5px;
 }
+
 .create-ac-btn {
     width: 50%;
     padding: 8px 0;
     display: block;
-    margin:0 auto;
+    margin: 0 auto;
     border: none;
     background-color: #00aa1c;
     color: white;
