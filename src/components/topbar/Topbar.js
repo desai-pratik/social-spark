@@ -8,12 +8,10 @@ import { addNotification, addSelectedChat } from "../../context/chatSlice";
 
 const Topbar = () => {
   const user = useSelector(state => state.auth.user);
-  const chatNotifications = useSelector(state => state.chat.notification);
+  const chatNotification = useSelector(state => state.chat.notification);
   const dispatch = useDispatch();
   const toastRef = useRef(null);
   const navigate = useNavigate();
-  const notifiedChats = new Set();
-
 
   const showToast = () => {
     const toast = new window.bootstrap.Toast(toastRef.current, {
@@ -29,16 +27,21 @@ const Topbar = () => {
   const handleNotification = (chatObj) => {
     navigate("/chats");
     dispatch(addSelectedChat(chatObj.chat))
-    dispatch(addNotification(chatNotifications.filter((chatNotify) => chatNotify !== chatObj)))
+    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
   };
 
-  const uniqueNotifications = chatNotifications.filter(chatNotify => {
-    if (!notifiedChats.has(chatNotify.chat._id)) {
-      notifiedChats.add(chatNotify.chat._id);
-      return true;
-    }
-    return false;
-  });
+  const aggregateNotifications = () => {
+    const notificationMap = new Map();
+    chatNotification.forEach(notify => {
+      const chatId = notify.chat._id;
+      if (!notificationMap.has(chatId)) {
+        notificationMap.set(chatId, { ...notify, messageCount: 0 });
+      }
+      notificationMap.get(chatId).messageCount += 1;
+    });
+    return Array.from(notificationMap.values());
+  };
+  const aggregatedNotifications = aggregateNotifications();
 
   return (
     <nav className="navbar navbar-expand-lg topbar py-1 position-sticky z-3">
@@ -71,9 +74,9 @@ const Topbar = () => {
             <div className="icons d-flex gap-4 text-white mx-2">
               <div className="position-relative notification text-white" onClick={showToast}>
                 <i className="bi bi-chat-left-dots-fill fs-5"></i>
-                {chatNotifications.length > 0 && (
+                {chatNotification.length > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {chatNotifications.length}
+                    {chatNotification.length}
                   </span>
                 )}
               </div>
@@ -84,10 +87,10 @@ const Topbar = () => {
                     <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
                   <div className="toast-body text-black">
-                    {uniqueNotifications.length === 0 && (
-                      <p className="m-0">No notification in chat</p>
+                    {aggregatedNotifications.length === 0 && (
+                      <p className="m-0">No notifications in chat</p>
                     )}
-                    {uniqueNotifications.map((chatNotify) => (
+                    {aggregatedNotifications.map((chatNotify) => (
                       <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify.chat._id} onClick={() => handleNotification(chatNotify)}>
                         <img src={!chatNotify.chat.isGroupChat ? getSenderDetails(user, chatNotify.chat.users).profilePicture ? getSenderDetails(user, chatNotify.chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
                           className='rounded-circle me-2'
@@ -96,16 +99,13 @@ const Topbar = () => {
                           title={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username} />
                         <div>
                           <span className='m-0 d-block'>{chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}</span>
+                          <span className="badge rounded-pill bg-danger">{chatNotify.messageCount}</span>
                         </div>
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                          {chatNotify.messages.length}
-                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-
               {/* <div className="toast-container bg-white" style={{ width: "250px", marginLeft: "-150px", marginTop: "45px" }}>
                 <div id={`liveToast`} className="toast" role="alert" aria-live="assertive" aria-atomic="true" ref={toastRef}>
                   <div className="toast-header">
