@@ -169,27 +169,29 @@ const ChatSidebar = () => {
           </div>
 
           {/* i need notification length here for particular chat*/}
-          {getUnreadNotificationCount(chat) > 0 && (
+          {getUnreadNotificationCount(chat) > 0 ? (
             <span className="badge bg-danger rounded-pill">
               {getUnreadNotificationCount(chat)}
             </span>
-          )}
+          ) : (
+            <div>
+              <i className="bi bi-three-dots-vertical p-1 cursor-pointer" onClick={() => showToast(chat._id)}></i>
 
-          <div>
-            <i className="bi bi-three-dots-vertical p-1 cursor-pointer" onClick={() => showToast(chat._id)}></i>
-
-            <div className="toast-container bg-white" style={{ width: "200px" }}>
-              <div id={`liveToast-${chat._id}`} className="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div className="toast-header">
-                  <strong className="me-auto capitalize">{!chat.isGroupChat ? getSenderDetails(user, chat.users).username : chat.chatName}</strong>
-                  <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div className="toast-body">
-                  <Button variant="outlined" className="w-100 my-1" onClick={() => deleteChat(chat._id)} >Delete Chat</Button>
+              <div className="toast-container bg-white" style={{ width: "200px" }}>
+                <div id={`liveToast-${chat._id}`} className="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div className="toast-header">
+                    <strong className="me-auto capitalize">{!chat.isGroupChat ? getSenderDetails(user, chat.users).username : chat.chatName}</strong>
+                    <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                  <div className="toast-body">
+                    <Button variant="outlined" className="w-100 my-1" onClick={() => deleteChat(chat._id)} >Delete Chat</Button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )
+          }
+
         </div>)
       )}
     </div>
