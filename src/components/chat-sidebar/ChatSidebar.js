@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { tostConfig } from "../../config/interface";
 import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
-import { addSelectedChat } from "../../context/chatSlice";
+import { addNotification, addSelectedChat } from "../../context/chatSlice";
 import { Button } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import GroupChatModal from "../group-chat-modal/GroupChatModal";
@@ -118,6 +118,11 @@ const ChatSidebar = () => {
     }
   };
 
+  const SelectedChat = async (chat)=> {
+    dispatch(addSelectedChat(chat));
+    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chat)))
+  }
+
   const getUnreadNotificationCount = (chat) => {
     return chatNotification.filter((n) => n.chat._id === chat._id && !n.read).length;
   };
@@ -148,7 +153,8 @@ const ChatSidebar = () => {
       <GroupChatModal chats={chats} setChats={setChats} />
 
       {chats && chats.map((chat) => (
-        <div onClick={() => dispatch(addSelectedChat(chat))} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
+        // <div onClick={() => dispatch(addSelectedChat(chat))} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
+        <div onClick={() => SelectedChat(chat)} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
           <div className='d-flex align-items-center'>
             <img
               src={!chat.isGroupChat ? getSenderDetails(user, chat.users).profilePicture ? getSenderDetails(user, chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
