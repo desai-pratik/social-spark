@@ -11,7 +11,6 @@ import { addNotification } from '../../context/chatSlice';
 import { toast } from 'react-toastify';
 import { tostConfig } from '../../config/interface';
 import EmojiPicker from 'emoji-picker-react';
-import { toggleLoading } from '../../context/loadingSlice';
 
 const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
 var socket, selectedChatCompare;
@@ -72,9 +71,9 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
         //give notification
-        if (!notification.includes(newMessageReceived)) {
-          dispatch(addNotification([newMessageReceived, ...notification]));
-        }
+        // if (!notification.includes(newMessageReceived)) {
+        //   dispatch(addNotification([newMessageReceived, ...notification]));
+        // }
       } else {
         setMessages([...messages, newMessageReceived])
       }
@@ -178,7 +177,6 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
               </div>
             )}
           </div>
-
           <div className='h-100 overflow-y-scroll'>
             {messages && messages.map((m, i) => (
               <div className='d-flex align-items-end' key={m._id}>

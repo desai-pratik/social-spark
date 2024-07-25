@@ -121,7 +121,6 @@ const ChatSidebar = () => {
   const SelectedChat = async (chat)=> {
     dispatch(addSelectedChat(chat));
     dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify.chat._id !== chat._id)));
-    // this is not working when i select the chat then notification was not gone for particular user
   }
 
   const getUnreadNotificationCount = (chat) => {
@@ -175,7 +174,6 @@ const ChatSidebar = () => {
             </div>
           </div>
 
-          {/* i need notification length here for particular chat*/}
           {getUnreadNotificationCount(chat) > 0 ? (
             <span className="badge bg-danger rounded-pill">
               {getUnreadNotificationCount(chat)}

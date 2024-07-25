@@ -11,11 +11,39 @@ import {
   Route,
   Navigate
 } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Chat from './pages/chat/Chat';
 import Setting from './pages/setting/Setting';
+import { useEffect } from 'react';
+import { addNotification } from './context/chatSlice';
+import { io } from 'socket.io-client';
+
+const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
+let socket;
 function App() {
   const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
+  const notifications = useSelector(state => state.chat.notification);
+
+  useEffect(() => {
+    if (user) {
+      socket = io(ENDPOINT);
+      socket.emit("setup", user);
+      socket.on("connected", () => console.log("Socket connected"));
+
+      socket.on("message received", (newMessageReceived) => {
+        // Dispatch notification if not already in store
+        if (!notifications.some(n => n._id === newMessageReceived._id)) {
+          dispatch(addNotification([newMessageReceived, ...notifications]));
+        }
+      });
+
+      return () => {
+        socket.disconnect();
+      };
+    }
+  }, [user, dispatch, notifications]);
+
 
   return (
     <Router>
