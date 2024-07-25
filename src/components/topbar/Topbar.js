@@ -8,10 +8,12 @@ import { addNotification, addSelectedChat } from "../../context/chatSlice";
 
 const Topbar = () => {
   const user = useSelector(state => state.auth.user);
-  const chatNotification = useSelector(state => state.chat.notification);
+  const chatNotifications = useSelector(state => state.chat.notification);
   const dispatch = useDispatch();
   const toastRef = useRef(null);
   const navigate = useNavigate();
+  const notifiedChats = new Set();
+
 
   const showToast = () => {
     const toast = new window.bootstrap.Toast(toastRef.current, {
@@ -27,13 +29,16 @@ const Topbar = () => {
   const handleNotification = (chatObj) => {
     navigate("/chats");
     dispatch(addSelectedChat(chatObj.chat))
-    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
+    dispatch(addNotification(chatNotifications.filter((chatNotify) => chatNotify !== chatObj)))
   };
 
-  const getMessageCount = (chat) => {
-    const notificationsForChat = chatNotification.filter((n) => n.chat._id === chat._id);
-    return notificationsForChat.reduce((acc, n) => acc + (n.messagesCount || 0), 0);
-  };
+  const uniqueNotifications = chatNotifications.filter(chatNotify => {
+    if (!notifiedChats.has(chatNotify.chat._id)) {
+      notifiedChats.add(chatNotify.chat._id);
+      return true;
+    }
+    return false;
+  });
 
   return (
     <nav className="navbar navbar-expand-lg topbar py-1 position-sticky z-3">
@@ -66,9 +71,9 @@ const Topbar = () => {
             <div className="icons d-flex gap-4 text-white mx-2">
               <div className="position-relative notification text-white" onClick={showToast}>
                 <i className="bi bi-chat-left-dots-fill fs-5"></i>
-                {chatNotification.length > 0 && (
+                {chatNotifications.length > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {chatNotification.length}
+                    {chatNotifications.length}
                   </span>
                 )}
               </div>
@@ -79,22 +84,22 @@ const Topbar = () => {
                     <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
                   <div className="toast-body text-black">
-                    {!chatNotification.length > 0 && (
+                    {uniqueNotifications.length === 0 && (
                       <p className="m-0">No notification in chat</p>
                     )}
-                    {chatNotification.map((chatNotify) => (
-                      <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify._id} onClick={() => handleNotification(chatNotify)}>
+                    {uniqueNotifications.map((chatNotify) => (
+                      <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify.chat._id} onClick={() => handleNotification(chatNotify)}>
                         <img src={!chatNotify.chat.isGroupChat ? getSenderDetails(user, chatNotify.chat.users).profilePicture ? getSenderDetails(user, chatNotify.chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}
                           className='rounded-circle me-2'
                           style={{ width: "40px", height: "40px" }}
                           alt={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}
                           title={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username} />
-                        <div className="position-relative">
+                        <div>
                           <span className='m-0 d-block'>{chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}</span>
-                          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {getMessageCount(chatNotify.chat)}
-                          </span>
                         </div>
+                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                          {chatNotify.messages.length}
+                        </span>
                       </div>
                     ))}
                   </div>
