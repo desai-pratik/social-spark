@@ -120,7 +120,7 @@ const ChatSidebar = () => {
 
   const SelectedChat = async (chat)=> {
     dispatch(addSelectedChat(chat));
-    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chat)))
+    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chat)));
   }
 
   const getUnreadNotificationCount = (chat) => {
