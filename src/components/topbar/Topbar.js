@@ -24,12 +24,6 @@ const Topbar = () => {
     }
   };
 
-  const handleNotification = (chatObj) => {
-    navigate("/chats");
-    dispatch(addSelectedChat(chatObj.chat))
-    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
-  };
-
   const aggregateNotifications = () => {
     const notificationMap = new Map();
     chatNotification.forEach(notify => {
@@ -41,6 +35,13 @@ const Topbar = () => {
     });
     return Array.from(notificationMap.values());
   };
+
+  const handleNotification = (chatObj) => {
+    navigate("/chats");
+    dispatch(addSelectedChat(chatObj.chat))
+    dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify.chat._id !== chatObj.chat._id)));
+  };
+
   const aggregatedNotifications = aggregateNotifications();
 
   return (
