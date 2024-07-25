@@ -30,10 +30,9 @@ const Topbar = () => {
     dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify !== chatObj)))
   };
 
-  const getUnreadMessageCount = (chatId) => {
-    return chatNotification
-      .filter(notify => notify.chat._id === chatId)
-      .reduce((total, notify) => total + notify.messageCount, 0);
+  const getMessageCount = (chat) => {
+    const notificationsForChat = chatNotification.filter((n) => n.chat._id === chat._id);
+    return notificationsForChat.reduce((acc, n) => acc + (n.messagesCount || 0), 0);
   };
 
   return (
@@ -90,19 +89,18 @@ const Topbar = () => {
                           style={{ width: "40px", height: "40px" }}
                           alt={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}
                           title={chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username} />
-                        <div>
+                        <div className="position-relative">
                           <span className='m-0 d-block'>{chatNotify.chat.isGroupChat ? chatNotify.chat.chatName : getSenderDetails(user, chatNotify.chat.users).username}</span>
-                          <small>{getUnreadMessageCount(chatNotify.chat._id)}</small>
+                          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {getMessageCount(chatNotify.chat)}
+                          </span>
                         </div>
-
-                        <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                          {chatNotification.reduce((acc, notify) => acc + notify.messageCount, 0)}
-                        </span>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
+
               {/* <div className="toast-container bg-white" style={{ width: "250px", marginLeft: "-150px", marginTop: "45px" }}>
                 <div id={`liveToast`} className="toast" role="alert" aria-live="assertive" aria-atomic="true" ref={toastRef}>
                   <div className="toast-header">
