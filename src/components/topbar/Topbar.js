@@ -72,6 +72,9 @@ const Topbar = () => {
                     <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                   </div>
                   <div className="toast-body text-black">
+                    {!chatNotification.length > 0 && (
+                      <p className="m-0">No notification in chat</p>
+                    )}
                     {chatNotification.map((chatNotify) => (
                       <div className='d-flex align-items-center rounded p-2 bg-body-tertiary my-2 cursor-pointer' data-bs-dismiss="toast" aria-label="Close" key={chatNotify._id} onClick={() => handelNotification(chatNotify)}>
                         <img src={!chatNotify.chat.isGroupChat ? getSenderDetails(user, chatNotify.chat.users).profilePicture ? getSenderDetails(user, chatNotify.chat.users).profilePicture : '/assets/default-user.jpg' : "/assets/default-users.png"}

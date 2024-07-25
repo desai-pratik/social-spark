@@ -172,7 +172,7 @@ const ViewPost = ({ post , onDeletePost }) => {
                 <source src={post.img} type="video/mp4" />
               </video>
             ) : (
-              <img src={post.img} className="img-fluid post-img d-flex mx-auto" onDoubleClick={() => hendallike(post._id)} alt="post" title="post"/>
+              <img src={post.img} className="img-fluid post-img d-flex mx-auto" onDoubleClick={() => hendallike(post._id)} alt="Post" title="Post"/>
             )}
             <span className="fs-1 position-absolute top-50 start-50 translate-middle">{postReaction}</span>
           </div>

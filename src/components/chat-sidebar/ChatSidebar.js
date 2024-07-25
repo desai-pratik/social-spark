@@ -14,6 +14,7 @@ import { getSenderDetails } from "../../chatLogic";
 const ChatSidebar = () => {
   const user = useSelector(state => state.auth.user);
   const selectedChat = useSelector(state => state.chat.selectedChat);
+  const chatNotification = useSelector(state => state.chat.notification);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [chats, setChats] = useState([]);
@@ -117,6 +118,10 @@ const ChatSidebar = () => {
     }
   };
 
+  const getUnreadNotificationCount = (chat) => {
+    return chatNotification.filter((n) => n.chat._id === chat._id && !n.read).length;
+  };
+
   return (
     <div className='p-3 pt-0 chat-sidebar'>
       <div className='sidebar-first pt-3'>
@@ -156,12 +161,20 @@ const ChatSidebar = () => {
                 {!chat.isGroupChat ? getSenderDetails(user, chat.users).username : chat.chatName}
               </span>
               {!chat.isGroupChat && (
-                <small>{getSenderDetails(user, chat.users).email.length > 17 
-                  ? `${getSenderDetails(user, chat.users).email.slice(0, 17)}...` 
+                <small>{getSenderDetails(user, chat.users).email.length > 17
+                  ? `${getSenderDetails(user, chat.users).email.slice(0, 17)}...`
                   : getSenderDetails(user, chat.users).email}</small>
               )}
             </div>
           </div>
+
+          {/* i need notification length here for particular chat*/}
+          {getUnreadNotificationCount(chat) > 0 && (
+            <span className="badge bg-danger rounded-pill">
+              {getUnreadNotificationCount(chat)}
+            </span>
+          )}
+
           <div>
             <i className="bi bi-three-dots-vertical p-1 cursor-pointer" onClick={() => showToast(chat._id)}></i>
 
