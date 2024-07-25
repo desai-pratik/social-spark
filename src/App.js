@@ -32,7 +32,6 @@ function App() {
       socket.on("connected", () => console.log("Socket connected"));
 
       socket.on("message received", (newMessageReceived) => {
-        // Dispatch notification if not already in store
         if (!notifications.some(n => n._id === newMessageReceived._id)) {
           dispatch(addNotification([newMessageReceived, ...notifications]));
         }
