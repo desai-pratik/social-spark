@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import { addNotification, addSelectedChat } from "../../context/chatSlice";
 import { Button } from "@mui/material";
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, AutoAwesome } from "@mui/icons-material";
 import GroupChatModal from "../group-chat-modal/GroupChatModal";
 import { getSenderDetails } from "../../chatLogic";
 
@@ -118,13 +118,17 @@ const ChatSidebar = () => {
     }
   };
 
-  const SelectedChat = async (chat)=> {
+  const SelectedChat = async (chat) => {
     dispatch(addSelectedChat(chat));
     dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify.chat._id !== chat._id)));
-  }
+  };
 
   const getUnreadNotificationCount = (chat) => {
     return chatNotification.filter((n) => n.chat._id === chat._id && !n.read).length;
+  };
+
+  const SelectAIChat = () => {
+    accessChat("66a5166a068fad5166a08218");  // for ai chat
   };
 
   return (
@@ -153,7 +157,6 @@ const ChatSidebar = () => {
       <GroupChatModal chats={chats} setChats={setChats} />
 
       {chats && chats.map((chat) => (
-        // <div onClick={() => dispatch(addSelectedChat(chat))} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
         <div onClick={() => SelectedChat(chat)} className={`d-flex align-items-center justify-content-between rounded p-2  mb-2 cursor-pointer ${chat?._id === selectedChat?._id ? "bg-dark-subtle" : "bg-body-secondary"}`} key={chat._id}>
           <div className='d-flex align-items-center'>
             <img
@@ -181,7 +184,6 @@ const ChatSidebar = () => {
           ) : (
             <div>
               <i className="bi bi-three-dots-vertical p-1 cursor-pointer" onClick={() => showToast(chat._id)}></i>
-
               <div className="toast-container bg-white" style={{ width: "200px" }}>
                 <div id={`liveToast-${chat._id}`} className="toast" role="alert" aria-live="assertive" aria-atomic="true">
                   <div className="toast-header">
@@ -196,9 +198,13 @@ const ChatSidebar = () => {
             </div>
           )
           }
-
         </div>)
       )}
+
+      <Button variant="contained" onClick={SelectAIChat} className="position-fixed bottom-0 start-0 ms-3 mb-3" style={{minWidth: "auto", padding : "6px"}} color="primary">
+        <AutoAwesome />
+      </Button>
+
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { getSenderDetails, isLastMessage, isSameSender, isSameSenderMargin, isSameUser } from '../../chatLogic';
 import { Link } from "react-router-dom";
 import UpdateGroupChatModal from '../update-group-chat-modal/UpdateGroupChatModal';
@@ -7,10 +7,10 @@ import axios from 'axios';
 import { io } from 'socket.io-client';
 import Lottie from 'react-lottie';
 import animationData from '../../animation/animationData.json';
-import { addNotification } from '../../context/chatSlice';
 import { toast } from 'react-toastify';
 import { tostConfig } from '../../config/interface';
 import EmojiPicker from 'emoji-picker-react';
+import ReactMarkdown from 'react-markdown';
 
 const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
 var socket, selectedChatCompare;
@@ -25,7 +25,6 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const dispatch = useDispatch();
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const senderDetails = selectedChat && getSenderDetails(user, selectedChat.users);
 
@@ -52,7 +51,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
     } catch (error) {
       toast.error(`${error}`, tostConfig);
     }
-  }
+  };
 
   useEffect(() => {
     socket = io(ENDPOINT);
@@ -70,10 +69,6 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChatCompare || selectedChatCompare._id !== newMessageReceived.chat._id) {
-        //give notification
-        // if (!notification.includes(newMessageReceived)) {
-        //   dispatch(addNotification([newMessageReceived, ...notification]));
-        // }
       } else {
         setMessages([...messages, newMessageReceived])
       }
@@ -82,25 +77,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessages) {
-      event.preventDefault();
-      socket.emit("stop typing", selectedChat._id);
-      try {
-        const config = {
-          headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${user.token}`
-          }
-        };
-        const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/messages`, {
-          content: newMessages,
-          chatId: selectedChat._id
-        }, config);
-        setNewMessages("");
-        socket.emit("new message", res.data);
-        setMessages([...messages, res.data]);
-      } catch (error) {
-        toast.error(`${error}`, tostConfig);
-      }
+      clickSendMessage(event);
     }
   };
 
@@ -118,9 +95,14 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
         content: newMessages,
         chatId: selectedChat._id
       }, config);
+      const responseData = res.data;
+      socket.emit("new message", responseData);
+      setMessages([...messages, responseData]);
+
       setNewMessages("");
-      socket.emit("new message", res.data);
-      setMessages([...messages, res.data]);
+      if (senderDetails._id === "66a5166a068fad5166a08218") {
+        sendAiMessage();
+      }
     } catch (error) {
       toast.error(`${error}`, tostConfig);
     }
@@ -152,6 +134,30 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
     setNewMessages((prev) => prev + e.emoji);
     setOpenEmojiPicker(false);
   };
+
+  const sendAiMessage = async () => {
+    try {
+      const google_response = await axios({
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${"AIzaSyC0WYGfxX5ebVXA2YefcnBsro5WbtTbzWg"}`,
+        method: "post",
+        data: { "contents": [{ "parts": [{ "text": newMessages }] }] }
+      });
+      // for ai google_response
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YTUxNjZhMDY4ZmFkNTE2NmEwODIxOCIsImVtYWlsIjoicXdlQGdtYWlsLmNvbSIsImlhdCI6MTcyMjE0NzExMCwiZXhwIjoxNzI0NzM5MTEwfQ.zBUJU6K4FNbCXDQC2qubf81Y3VWTzuywsQh5TA8gZDo`
+        }
+      };
+      const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/messages`, {
+        content: google_response?.data?.candidates[0]?.content?.parts[0]?.text,
+        chatId: selectedChat._id
+      }, config);
+      setMessages([...messages, res.data]);
+    } catch (error) {
+      toast.error(`${error}`, tostConfig);
+    }
+  }
 
   return (
     <>
@@ -185,7 +191,11 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
                   || isLastMessage(messages, i, user._id)) && (
                     <img src={m.sender.profilePicture ? m.sender.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-1' style={{ width: "30px", height: "30px" }} title={m.sender.username} alt={m.sender.username} />
                   )}
-                <span className="py-1 px-3 rounded d-inline-block" style={{ backgroundColor: `${m.sender._id === user._id ? "#B9F5D0" : "#BEE3F8"}`, maxWidth: "75%", marginLeft: isSameSenderMargin(messages, m, i, user._id), marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10 }}> {m.content} </span>
+                <pre
+                  className="py-1 px-2 mb-0 rounded d-inline-block"
+                  style={{ backgroundColor: `${m.sender._id === user._id ? "#B9F5D0" : "#BEE3F8"}`, maxWidth: "75%", marginLeft: isSameSenderMargin(messages, m, i, user._id), marginTop: isSameUser(messages, m, i, user._id) ? "3px" : "10px", textWrap: "wrap" }}>
+                  <ReactMarkdown>{m.content}</ReactMarkdown>
+                </pre>
               </div>
             ))}
           </div>

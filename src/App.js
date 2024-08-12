@@ -1,4 +1,4 @@
-import './App.css';
+ import './App.css';
 import Home from './pages/home/Home';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
@@ -36,13 +36,11 @@ function App() {
           dispatch(addNotification([newMessageReceived, ...notifications]));
         }
       });
-
       return () => {
         socket.disconnect();
       };
     }
   }, [user, dispatch, notifications]);
-
 
   return (
     <Router>
@@ -57,7 +55,6 @@ function App() {
         <Route path="/setting" exact element={user !== null ? <Setting /> : <SignUp />} />
       </Routes>
     </Router>
-
   );
 }
 

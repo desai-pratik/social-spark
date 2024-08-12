@@ -43,28 +43,6 @@ const HomeSidebar = () => {
           <h6 className="menu-text ms-3 m-0">Courses</h6>
         </div>
         <Button variant="contained" color="primary">Show More</Button>
-        <hr />
-
-        <div className="menu-user d-flex align-items-center">
-          <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends" title="Pratik" />
-          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
-        </div>
-        <div className="menu-user d-flex align-items-center">
-          <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends" title="Pratik" />
-          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
-        </div>
-        <div className="menu-user d-flex align-items-center">
-          <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends" title="Pratik" />
-          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
-        </div>
-        <div className="menu-user d-flex align-items-center">
-          <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends" title="Pratik" />
-          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
-        </div>
-        <div className="menu-user d-flex align-items-center">
-          <img src="/assets/default-user.jpg" className='w-25 p-1 rounded-circle' alt="friends" title="Pratik" />
-          <h6 className="menu-text ms-2 m-0">Pratik Desai</h6>
-        </div>
       </div>
     )
   }
