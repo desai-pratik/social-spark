@@ -9,11 +9,12 @@ const HomeRightbar = () => {
     const [onlineUsers, setOnlineUsers] = useState([]);
     
     useEffect(() => {
-        const socket = io('https://socialspark-backend.onrender.com');
+        const socket = io(process.env.REACT_APP_API_BASE_ENDPOINT);
         socket.emit('setup', user);
         socket.on('online users', (users) => setOnlineUsers(users));
         return () => socket.disconnect();
     }, [user]);
+
     return (
         <div className='rigthbar pt-3 pe-3 position-sticky overflow-y-auto'>
             <h5 className='fw-normal'><b>polo Foster </b> and <b>3 other friends </b>have a birthday today.</h5>

@@ -5,10 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from "../../context/sidebarSlice";
 import { getSenderDetails } from "../../chatLogic";
 import { addNotification, addSelectedChat } from "../../context/chatSlice";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { tostConfig } from "../../config/interface";
-import { addSearch } from "../../context/searchSlice";
 
 const Topbar = () => {
   const user = useSelector(state => state.auth.user);
@@ -47,13 +43,11 @@ const Topbar = () => {
     dispatch(addNotification(chatNotification.filter((chatNotify) => chatNotify.chat._id !== chatObj.chat._id)));
   };
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/search?q=${query}`);
-      dispatch(addSearch(response.data));
-    } catch (error) {
-      toast.error(`${error}`, tostConfig);
+    if (query.trim()) {
+      const formattedQuery = query.trim().replace(/\s+/g, '+');
+      navigate(`/?q=${formattedQuery}`);
     }
   };
 

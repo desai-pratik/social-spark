@@ -68,6 +68,7 @@ const ProfileRightbar = ({ user }) => {
       setLoading(false);
     } catch (error) {
       toast.error(error.response.data.message, tostConfig);
+      setLoading(false);
     }
   };
 
@@ -91,6 +92,7 @@ const ProfileRightbar = ({ user }) => {
       setLoading(false);
     } catch (error) {
       toast.error(error.response.data.message, tostConfig);
+      setLoading(false);
     }
   };
 
@@ -115,7 +117,7 @@ const ProfileRightbar = ({ user }) => {
             className="w-100 border-bottom border-0 ms-1"
           />
         ) : (
-          <span>{user.city}</span>
+          <span>{user.city || " Not filed "}</span>
         )}
       </div>
       <div className="d-flex">
@@ -130,7 +132,7 @@ const ProfileRightbar = ({ user }) => {
             className="w-100 border-bottom border-0 ms-1"
           />
         ) : (
-          <span>{user.from}</span>
+          <span>{user.from || " Not filed "}</span>
         )}
       </div>
       <div className="d-flex">
@@ -145,7 +147,7 @@ const ProfileRightbar = ({ user }) => {
             className="w-100 border-bottom border-0 ms-1"
           />
         ) : (
-          <span>{user.relationship}</span>
+          <span>{user.relationship || " Not filed "}</span>
         )}
       </div>
       {user._id === currentUser._id && (

@@ -18,7 +18,7 @@ import { useEffect } from 'react';
 import { addNotification } from './context/chatSlice';
 import { io } from 'socket.io-client';
 
-const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
+// const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
 let socket;
 function App() {
   const user = useSelector(state => state.auth.user);
@@ -27,7 +27,7 @@ function App() {
 
   useEffect(() => {
     if (user) {
-      socket = io(ENDPOINT);
+      socket = io(process.env.REACT_APP_API_BASE_ENDPOINT);
       socket.emit("setup", user);
       socket.on("connected", () => console.log("Socket connected"));
 

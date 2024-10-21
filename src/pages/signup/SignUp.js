@@ -38,6 +38,7 @@ const SignUp = () => {
                 setLoading(false);
             } catch (error) {
                 toast.error(`${error}`, tostConfig);
+                setLoading(false);
             }
         }
     });
@@ -58,6 +59,7 @@ const SignUp = () => {
             setLoading(false);
         } catch (error) {
             toast.error(`${error}`, tostConfig);
+            setLoading(false);
         }
     };
 

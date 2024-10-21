@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getSenderDetails, isLastMessage, isSameSender, isSameSenderMargin, isSameUser } from '../../chatLogic';
 import { Link } from "react-router-dom";
 import UpdateGroupChatModal from '../update-group-chat-modal/UpdateGroupChatModal';
@@ -11,8 +11,8 @@ import { toast } from 'react-toastify';
 import { tostConfig } from '../../config/interface';
 import EmojiPicker from 'emoji-picker-react';
 import ReactMarkdown from 'react-markdown';
+import { addNotification } from '../../context/chatSlice';
 
-const ENDPOINT = "https://socialspark-backend.onrender.com";  // this is backend server
 var socket, selectedChatCompare;
 
 const ChatBox = ({ fetchAgain, setFetchAgain }) => {
@@ -27,6 +27,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
   const senderDetails = selectedChat && getSenderDetails(user, selectedChat.users);
+  const [selectedMessages, setSelectedMessages] = useState([]);
 
   const defaultOptions = {
     loop: true,
@@ -54,7 +55,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
   };
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(process.env.REACT_APP_API_BASE_ENDPOINT);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
@@ -74,6 +75,15 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
       }
     })
   }, [notification, messages, selectedChatCompare]);
+
+  useEffect(() => {
+    socket.on('messages deleted', ({ messageIds }) => {
+        setMessages(messages.filter(m => !messageIds.includes(m._id)));
+    });
+    return () => {
+        socket.off('messages deleted');
+    };
+}, [messages]);
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessages) {
@@ -157,7 +167,38 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
     } catch (error) {
       toast.error(`${error}`, tostConfig);
     }
-  }
+  };
+
+  const toggleMessageSelection = (messageId) => {
+    if (selectedMessages.includes(messageId)) {
+      setSelectedMessages(selectedMessages.filter(id => id !== messageId));
+    } else {
+      setSelectedMessages([...selectedMessages, messageId]);
+    }
+  };
+
+  const deleteSelectedMessages = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`
+        }
+      };
+
+      socket.emit('delete messages', { chatId: selectedChat._id, messageIds: selectedMessages });
+      await Promise.all(selectedMessages.map(async (messageId) => {
+        await axios.delete(`${process.env.REACT_APP_API_BASE_URL}/messages/${messageId}`, config);
+      }));
+
+      setMessages(messages.filter(m => !selectedMessages.includes(m._id)));
+
+
+      setSelectedMessages([]);
+      toast.success("Messages deleted successfully", tostConfig);
+    } catch (error) {
+      toast.error(`${error}`, tostConfig);
+    }
+  };
 
   return (
     <>
@@ -170,7 +211,12 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
                   <img className='rounded-circle' style={{ width: "40px", height: "40px" }} src={senderDetails.profilePicture || "/assets/default-user.jpg"} title={senderDetails.username} alt={senderDetails.username} />
                   <h5 className='m-0 ms-2 capitalize'>{senderDetails.username}</h5>
                 </Link>
-                <i className="bi bi-three-dots-vertical p-2 cursor-pointer"></i>
+                <div>
+                  {selectedMessages.length > 0 && (
+                    <i class="bi bi-trash3-fill p-2 cursor-pointer" onClick={deleteSelectedMessages} ></i>
+                  )}
+                  <i className="bi bi-three-dots-vertical p-2 cursor-pointer"></i>
+                </div>
               </div>
             ) : (
               <div className='d-flex align-items-center justify-content-between'>
@@ -178,6 +224,9 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
                   <img style={{ width: "40px", height: "40px" }} className='rounded-circle' src={"/assets/default-users.png"} title={selectedChat.chatName} alt={selectedChat.chatName} />
                   <h5 className='m-0 ms-2 capitalize'>{selectedChat.chatName}</h5>
                 </div>
+                {selectedMessages.length > 0 && (
+                  <i class="bi bi-trash3-fill p-2 cursor-pointer" onClick={deleteSelectedMessages} ></i>
+                )}
                 <i className="bi bi-three-dots-vertical p-2 cursor-pointer" data-bs-toggle="modal" data-bs-target="#updateGroupChat"></i>
                 <UpdateGroupChatModal fetchMessage={fetchMessage} fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
               </div>
@@ -185,24 +234,23 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
           </div>
           <div className='h-100 overflow-y-scroll'>
             {messages && messages.map((m, i) => (
-              <div className='d-flex align-items-end' key={m._id}>
+              <div className={`d-flex align-items-end ${selectedMessages.includes(m._id) ? 'selected' : ''}`} key={m._id}>
                 {(
                   isSameSender(messages, m, i, user._id)
                   || isLastMessage(messages, i, user._id)) && (
                     <img src={m.sender.profilePicture ? m.sender.profilePicture : "/assets/default-user.jpg"} className='rounded-circle me-1' style={{ width: "30px", height: "30px" }} title={m.sender.username} alt={m.sender.username} />
                   )}
                 <pre
-                  className="py-1 px-2 mb-0 rounded d-inline-block"
-                  style={{ backgroundColor: `${m.sender._id === user._id ? "#B9F5D0" : "#BEE3F8"}`, maxWidth: "75%", marginLeft: isSameSenderMargin(messages, m, i, user._id), marginTop: isSameUser(messages, m, i, user._id) ? "3px" : "10px", textWrap: "wrap" }}>
+                  onClick={() => toggleMessageSelection(m._id)}
+                  className={`py-1 px-2 mb-0 rounded d-inline-block`}
+                  style={{ backgroundColor: `${m.sender._id === user._id ? "#B9F5D0" : "#BEE3F8"}`, maxWidth: "75%", marginLeft: isSameSenderMargin(messages, m, i, user._id), marginTop: isSameUser(messages, m, i, user._id) ? "3px" : "10px", textWrap: "wrap", cursor: "context-menu" }}>
                   <ReactMarkdown>{m.content}</ReactMarkdown>
                 </pre>
               </div>
             ))}
           </div>
           <div className="pt-2">
-            {isTyping ? (
-              <Lottie options={defaultOptions} className='m-0' width={50} height={30} />
-            ) : ""}
+            {isTyping && <Lottie options={defaultOptions} className='m-0' width={50} height={30} />}
             <EmojiPicker height={350} width={350} open={openEmojiPicker} onEmojiClick={handleEmojiClick} />
             <form action="" onKeyDown={sendMessage} className='d-flex align-items-center pt-2'>
               <i className="bi bi-emoji-smile fs-4 me-2 cursor-pointer" onClick={() => setOpenEmojiPicker(!openEmojiPicker)}></i>

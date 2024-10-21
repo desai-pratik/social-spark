@@ -13,7 +13,7 @@ const Feedback = ({ username }) => {
     const [posts, setPosts] = useState([]);
     const user = useSelector(state => state.auth.user);
     const location = useLocation();
-    const searchContent = useSelector(state => state.search.search);
+    const searchQuery = new URLSearchParams(location.search).get('q');
 
     const fetchPosts = async () => {
         try {
@@ -48,8 +48,8 @@ const Feedback = ({ username }) => {
 
     return (
         <div className='feedback p-3'>
-            {searchContent ? (
-                <SearchContent />
+            {searchQuery ? (
+                <SearchContent query={searchQuery} />
             ) : (
                 <>
                     {(!username || username === user.username) && <SharePost posts={posts} setPosts={setPosts} />}

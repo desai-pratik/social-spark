@@ -37,6 +37,7 @@ const SharePost = ({ posts, setPosts }) => {
       setPosts([res.data, ...posts]);
     } catch (error) {
       toast.error(`${error}`, tostConfig);
+      setLoading(false);
     }
   };
 
