@@ -156,7 +156,7 @@ const ChatBox = ({ fetchAgain, setFetchAgain }) => {
       const config = {
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YTUxNjZhMDY4ZmFkNTE2NmEwODIxOCIsImVtYWlsIjoicXdlQGdtYWlsLmNvbSIsImlhdCI6MTcyMjE0NzExMCwiZXhwIjoxNzI0NzM5MTEwfQ.zBUJU6K4FNbCXDQC2qubf81Y3VWTzuywsQh5TA8gZDo`
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YTUxNjZhMDY4ZmFkNTE2NmEwODIxOCIsImVtYWlsIjoic29jaWFsc3BhcmtAZ21haWwuY29tIiwiaWF0IjoxNzI5NTM0NTQxLCJleHAiOjE3MzIxMjY1NDF9.vvpEEPXVE4bAObxAnsOgD1bS3H3jaN_zIshOkud1a6Y`
         }
       };
       const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/messages`, {
